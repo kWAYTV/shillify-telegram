@@ -2,5 +2,6 @@
 Telegram group advertiser, install modules and follow the steps.
 # Todo
 Custom delay per channel
-# Discord
-https://discord.gg/kws
+# Links
+[Discord](https://discord.gg/kws)
+[Telegram](https://t.me/kwaytv)
