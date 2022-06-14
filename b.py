@@ -1,5 +1,5 @@
 ############################IMPORTS################################
-import asyncio, time, os, contextlib                              #
+import time, os, contextlib                                       #
 from telethon import TelegramClient, errors                       #
 from telethon.tl.functions.channels import GetFullChannelRequest  #
 from colorama import Fore, Back, Style, init                      #
