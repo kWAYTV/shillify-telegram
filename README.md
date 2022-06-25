@@ -2,7 +2,6 @@
 Telegram group advertiser. Useful for marketplaces/sellers.
 # Setting up
 Basically it has auto config generator so just run it.
-You are done :), happy shilling!
 # Links
 [Discord](https://discord.gg/MRNuVCXuTS)<br />
 [Telegram](https://t.me/kwaytv)<br />
