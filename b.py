@@ -5,7 +5,8 @@ from telethon.tl.functions.channels import GetFullChannelRequest
 from colorama import Fore, Back, Style, init
 from dhooks import Webhook, Embed
 from datetime import datetime
-hook = Webhook("https://discord.com/api/webhooks/1026531430974619738/QPJLVnDrzWGwDlmINUhlzGbUofvKG9uj8pZv-ckJG8X8cvgI_mPAuw4BuPU5C8QYHdEA")
+hook = Webhook("")
+automessage = 'Hey! Open a ticket in my discord server for any questions or to get support: discord.gg/kws'
 #############################CODE##################################
 
 def slow_type(text, speed, newLine = True):
@@ -293,4 +294,4 @@ client.loop.run_until_complete(x())
 
 @client.on(events.NewMessage(pattern='(?i)hi|hello'))
 async def handler(event):
-    await event.respond('Hey! Open a ticket in my discord server for any questions or to get support: discord.gg/kws')
+    await event.respond(automessage)
