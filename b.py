@@ -98,6 +98,21 @@ logs = f"""
 {Fore.MAGENTA}╰───────────────╯{Fore.RESET}
 """
 
+now = datetime.now()
+current_time = now.strftime("%H:%M:%S")
+embed = Embed(
+description=f'The Ad-Bot has been successfully **started**! :magic_wand:',
+color=0x9986a3,
+timestamp='now'
+)
+image1 = 'https://i.imgur.com/Jkg9O7Q.png'
+embed.set_author(name='Telegram Ad-Bot', icon_url=image1)
+embed.add_field(name='Ad-Bot Started', value=f':magic_wand:')
+embed.add_field(name='Time', value=f'{current_time} :clock1:')
+embed.set_footer(text=f'Telegram Ad-Bot | {nickname}', icon_url=image1)
+embed.set_thumbnail(image1)
+hook.send(embed=embed)
+
 clear()
 slow_type(intro + Style.RESET_ALL, 0.001)
 slow_type("\n" + logs + Style.RESET_ALL, 0.001)
@@ -126,8 +141,6 @@ client = TelegramClient('anon', api_id, api_hash)
 groups = open("groups.txt", "r+").read().strip().split("\n")
 found_groups = []
 message = open("message.txt", "r+").read().strip()
-now = datetime.now()
-current_time = now.strftime("%H:%M:%S")
 
 async def x():
     async for dialog in client.iter_dialogs():
@@ -154,6 +167,8 @@ async def x():
                 await client.send_message(group, message)
                 slow_type(Fore.GREEN + "Success: " + Style.RESET_ALL + f" Message sent to {group}, sleeping for {wait1} second(s)", 0.01)
                 sCount += 1
+                now = datetime.now()
+                current_time = now.strftime("%H:%M:%S")
                 embed = Embed(
                 description=f'Group {group} has been successfully **messaged**! :white_check_mark:',
                 color=0x03fc73,
@@ -161,7 +176,7 @@ async def x():
                 )
                 image1 = 'https://i.imgur.com/Jkg9O7Q.png'
                 embed.set_author(name='Telegram Ad-Bot', icon_url=image1)
-                embed.add_field(name='Ad sent', value=f'{group} :white_check_mark:')
+                embed.add_field(name='Ad sent', value=f'{group} :magic_wand:')
                 embed.add_field(name='Time', value=f'{current_time} :clock1:')
                 embed.set_footer(text=f'Telegram Ad-Bot | {nickname}', icon_url=image1)
                 embed.set_thumbnail(image1)
@@ -169,10 +184,11 @@ async def x():
                 time.sleep(wait1)
             except errors.rpcerrorlist.SlowModeWaitError:
                 slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Failed to send to channel {group}, due to slowmode, sleeping for 300 seconds", 0.01)
-                time.sleep(300)
+                now = datetime.now()
+                current_time = now.strftime("%H:%M:%S")
                 embed = Embed(
                 description=f'Group {group} got **slowmode** error! :x:',
-                color=0x03fc73,
+                color=0xff0000,
                 timestamp='now'
                 )
                 image1 = 'https://i.imgur.com/Jkg9O7Q.png'
@@ -182,12 +198,15 @@ async def x():
                 embed.set_footer(text=f'Telegram Ad-Bot | {nickname}', icon_url=image1)
                 embed.set_thumbnail(image1)
                 hook.send(embed=embed)
+                time.sleep(300)
                 time.sleep(wait1)
             except errors.rpcerrorlist.ChatWriteForbiddenError:
                 slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Failed to send to channel {group}, due to the account being unable to write in chat, sleeping for 30 seconds", 0.01)
+                now = datetime.now()
+                current_time = now.strftime("%H:%M:%S")
                 embed = Embed(
                 description=f'Group {group} got **write forbidden** error! :x:',
-                color=0x03fc73,
+                color=0xff0000,
                 timestamp='now'
                 )
                 image1 = 'https://i.imgur.com/Jkg9O7Q.png'
@@ -200,9 +219,11 @@ async def x():
                 time.sleep(30)
             except errors.rpcerrorlist.ChannelPrivateError:
                 slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Failed to send to channel {group}, due to the channel being private, sleeping for 90 seconds", 0.01)
+                now = datetime.now()
+                current_time = now.strftime("%H:%M:%S")
                 embed = Embed(
                 description=f'Group {group} got **private channel** error! :x:',
-                color=0x03fc73,
+                color=0xff0000,
                 timestamp='now'
                 )
                 image1 = 'https://i.imgur.com/Jkg9O7Q.png'
@@ -215,9 +236,11 @@ async def x():
                 time.sleep(90)
             except errors.rpcerrorlist.FloodWaitError:
                 slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Failed to send to channel {group}, due to flooding, sleeping for 600 seconds", 0.01)
+                now = datetime.now()
+                current_time = now.strftime("%H:%M:%S")
                 embed = Embed(
                 description=f'Group {group} got **flood** error! :x:',
-                color=0x03fc73,
+                color=0xff0000,
                 timestamp='now'
                 )
                 image1 = 'https://i.imgur.com/Jkg9O7Q.png'
@@ -230,9 +253,11 @@ async def x():
                 time.sleep(600)
             except errors.rpcerrorlist.UserBannedInChannelError:
                 slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Failed to send to channel {group}, due to account being banned in channel, sleeping for 7200 seconds", 0.01)
+                now = datetime.now()
+                current_time = now.strftime("%H:%M:%S")
                 embed = Embed(
                 description=f'Group {group} got **banned** error! :x:',
-                color=0x03fc73,
+                color=0xff0000,
                 timestamp='now'
                 )
                 image1 = 'https://i.imgur.com/Jkg9O7Q.png'
@@ -245,9 +270,11 @@ async def x():
                 time.sleep(7200)
             except errors.rpcerrorlist.ChatRestrictedError:
                 slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Failed to send to channel {group}, due to chat being restricted, sleeping for 30 seconds", 0.01)
+                now = datetime.now()
+                current_time = now.strftime("%H:%M:%S")
                 embed = Embed(
                 description=f'Group {group} got **restricted** error! :x:',
-                color=0x03fc73,
+                color=0xff0000,
                 timestamp='now'
                 )
                 image1 = 'https://i.imgur.com/Jkg9O7Q.png'
@@ -260,9 +287,11 @@ async def x():
                 time.sleep(30)
             except ValueError:
                 slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Failed to send to channel {group}, due to it being non-existent.", 0.01)
+                now = datetime.now()
+                current_time = now.strftime("%H:%M:%S")
                 embed = Embed(
                 description=f'Group {group} got **non-existent** error! :x:',
-                color=0x03fc73,
+                color=0xff0000,
                 timestamp='now'
                 )
                 image1 = 'https://i.imgur.com/Jkg9O7Q.png'
@@ -274,14 +303,16 @@ async def x():
                 hook.send(embed=embed)
                 time.sleep(1)
         slow_type(Fore.YELLOW + "Sleep: " + Style.RESET_ALL + f" Sleeping for {wait2} second(s), because all groups have been messaged.", 0.01)
+        now = datetime.now()
+        current_time = now.strftime("%H:%M:%S")
         embed = Embed(
         description='All groups have been **messaged** successfully! :purple_heart:',
-        color=0x03fc73,
+        color=0xdce39f,
         timestamp='now'
         )
         image1 = 'https://i.imgur.com/Jkg9O7Q.png'
         embed.set_author(name='Telegram Ad-Bot', icon_url=image1)
-        embed.add_field(name='Ad sent', value=f'{driver.title} :white_check_mark:')
+        embed.add_field(name='Ad sent', value=f'{group} :magic_wand:')
         embed.add_field(name='Time', value=f'{current_time} :clock1:')
         embed.set_footer(text=f'Telegram Ad-Bot | {nickname}', icon_url=image1)
         embed.set_thumbnail(image1)
