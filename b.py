@@ -1,10 +1,12 @@
 ############################IMPORTS################################
-import time, os, contextlib                                       #
-from telethon import TelegramClient, errors                       #
-from telethon.tl.functions.channels import GetFullChannelRequest  #
-from colorama import Fore, Back, Style, init                      #
+import asyncio, time, os, contextlib
+from telethon import TelegramClient, errors, sync, events
+from telethon.tl.functions.channels import GetFullChannelRequest
+from colorama import Fore, Back, Style, init
+from dhooks import Webhook, Embed
+from datetime import datetime
+hook = Webhook("https://discord.com/api/webhooks/1026531430974619738/QPJLVnDrzWGwDlmINUhlzGbUofvKG9uj8pZv-ckJG8X8cvgI_mPAuw4BuPU5C8QYHdEA")
 #############################CODE##################################
-
 
 def slow_type(text, speed, newLine = True):
     for i in text:
@@ -13,14 +15,11 @@ def slow_type(text, speed, newLine = True):
     if newLine: 
         print()
 
-
 sCount=0
 def rsCount():
     sCount=0
 
 clear = lambda: os.system('cls' if os.name in ('nt', 'dos') else 'clear')
-
-os.system(f"title Shillify Telegram - Checking files...")
 
 slow_type(Fore.GREEN + "Started!: " + Style.RESET_ALL + "Checking for files...", 0.01)
 def check_config():
@@ -66,22 +65,22 @@ if os.stat('groups.txt').st_size == 0:
             f.write(group + '\n')
     clear()
 
-
-
 if os.stat('message.txt').st_size == 0:
     slow_type(Fore.RED + "Error: " + Style.RESET_ALL + 'message.txt is empty', 0.01)
     slow_type(Fore.RED + "Error: " + Style.RESET_ALL + 'Please enter your message and restart the tool', 0.01)
     time.sleep(5)
     exit()
 
+clear()
 slow_type(Fore.BLUE + "Input: " + Style.RESET_ALL + f" How long do you want to wait between each message? (seconds): ", 0.01)
 wait1 = int(input())
 clear()
 slow_type(Fore.BLUE + "Input: " + Style.RESET_ALL + f" How long do you want to wait after all groups have been messaged? (seconds): ", 0.01)
 wait2 = int(input())
 clear()
-
-os.system(f"title Shillify Telegram - Starting...")
+slow_type(Fore.BLUE + "Input: " + Style.RESET_ALL + f"Enter your nickname: ", 0.01)
+nickname = input()
+clear()
 
 
 intro = f"""
@@ -101,25 +100,24 @@ logs = f"""
 clear()
 slow_type(intro + Style.RESET_ALL, 0.001)
 slow_type("\n" + logs + Style.RESET_ALL, 0.001)
-os.system(f"title Shillify Telegram - Ready!")                                                                                    
 
 with open("config.txt", "a+") as config:
     config.seek(0)
     cfg = config.read().strip()
     if cfg == "api_id:api_hash":
         slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Please edit config.txt with your api id and api hash", 0.01)
-        time.sleep(9999)
+        time.sleep(3)
         exit()
     else:
         try:
             api_id, api_hash = cfg.split(":")
         except ValueError:
             slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Incorrectly formatted config, make sure your format is api_id:api_hash", 0.01)
-            time.sleep(9999)
+            time.sleep(3)
             exit()
         except Exception as e:
             slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Unknown error ({e}), make sure your config is formatted correctly", 0.01)
-            time.sleep(9999)
+            time.sleep(3)
             exit()
 
 client = TelegramClient('anon', api_id, api_hash)
@@ -127,7 +125,8 @@ client = TelegramClient('anon', api_id, api_hash)
 groups = open("groups.txt", "r+").read().strip().split("\n")
 found_groups = []
 message = open("message.txt", "r+").read().strip()
-
+now = datetime.now()
+current_time = now.strftime("%H:%M:%S")
 
 async def x():
     async for dialog in client.iter_dialogs():
@@ -142,9 +141,9 @@ async def x():
     v = [found_group.lower() for found_group in found_groups]
     for group in groups:
         if group.lower() not in v:
-            slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Group {group} not found", 0.01)
+            continue
 
-    slow_type("", 0.01)
+    slow_type("", 0.00001)
 
     while True:
         sCount=0
@@ -154,30 +153,144 @@ async def x():
                 await client.send_message(group, message)
                 slow_type(Fore.GREEN + "Success: " + Style.RESET_ALL + f" Message sent to {group}, sleeping for {wait1} second(s)", 0.01)
                 sCount += 1
-                os.system(f"title Shillify Telegram - Working... - {sCount} message(s) sent this session.")
+                embed = Embed(
+                description=f'Group {group} has been successfully **messaged**! :white_check_mark:',
+                color=0x03fc73,
+                timestamp='now'
+                )
+                image1 = 'https://i.imgur.com/Jkg9O7Q.png'
+                embed.set_author(name='Telegram Ad-Bot', icon_url=image1)
+                embed.add_field(name='Ad sent', value=f'{group} :white_check_mark:')
+                embed.add_field(name='Time', value=f'{current_time} :clock1:')
+                embed.set_footer(text=f'Telegram Ad-Bot | {nickname}', icon_url=image1)
+                embed.set_thumbnail(image1)
+                hook.send(embed=embed)
                 time.sleep(wait1)
             except errors.rpcerrorlist.SlowModeWaitError:
                 slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Failed to send to channel {group}, due to slowmode, sleeping for 300 seconds", 0.01)
                 time.sleep(300)
+                embed = Embed(
+                description=f'Group {group} got **slowmode** error! :x:',
+                color=0x03fc73,
+                timestamp='now'
+                )
+                image1 = 'https://i.imgur.com/Jkg9O7Q.png'
+                embed.set_author(name='Telegram Ad-Bot', icon_url=image1)
+                embed.add_field(name='Slowmode error', value=f'{group} :x:')
+                embed.add_field(name='Time', value=f'{current_time} :clock1:')
+                embed.set_footer(text=f'Telegram Ad-Bot | {nickname}', icon_url=image1)
+                embed.set_thumbnail(image1)
+                hook.send(embed=embed)
+                time.sleep(wait1)
             except errors.rpcerrorlist.ChatWriteForbiddenError:
                 slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Failed to send to channel {group}, due to the account being unable to write in chat, sleeping for 30 seconds", 0.01)
+                embed = Embed(
+                description=f'Group {group} got **write forbidden** error! :x:',
+                color=0x03fc73,
+                timestamp='now'
+                )
+                image1 = 'https://i.imgur.com/Jkg9O7Q.png'
+                embed.set_author(name='Telegram Ad-Bot', icon_url=image1)
+                embed.add_field(name='Write forbidden error', value=f'{group} :x:')
+                embed.add_field(name='Time', value=f'{current_time} :clock1:')
+                embed.set_footer(text=f'Telegram Ad-Bot | {nickname}', icon_url=image1)
+                embed.set_thumbnail(image1)
+                hook.send(embed=embed)
                 time.sleep(30)
             except errors.rpcerrorlist.ChannelPrivateError:
                 slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Failed to send to channel {group}, due to the channel being private, sleeping for 90 seconds", 0.01)
+                embed = Embed(
+                description=f'Group {group} got **private channel** error! :x:',
+                color=0x03fc73,
+                timestamp='now'
+                )
+                image1 = 'https://i.imgur.com/Jkg9O7Q.png'
+                embed.set_author(name='Telegram Ad-Bot', icon_url=image1)
+                embed.add_field(name='Private channel error', value=f'{group} :x:')
+                embed.add_field(name='Time', value=f'{current_time} :clock1:')
+                embed.set_footer(text=f'Telegram Ad-Bot | {nickname}', icon_url=image1)
+                embed.set_thumbnail(image1)
+                hook.send(embed=embed)
                 time.sleep(90)
             except errors.rpcerrorlist.FloodWaitError:
                 slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Failed to send to channel {group}, due to flooding, sleeping for 600 seconds", 0.01)
+                embed = Embed(
+                description=f'Group {group} got **flood** error! :x:',
+                color=0x03fc73,
+                timestamp='now'
+                )
+                image1 = 'https://i.imgur.com/Jkg9O7Q.png'
+                embed.set_author(name='Telegram Ad-Bot', icon_url=image1)
+                embed.add_field(name='Flood error', value=f'{group} :x:')
+                embed.add_field(name='Time', value=f'{current_time} :clock1:')
+                embed.set_footer(text=f'Telegram Ad-Bot | {nickname}', icon_url=image1)
+                embed.set_thumbnail(image1)
+                hook.send(embed=embed)
                 time.sleep(600)
             except errors.rpcerrorlist.UserBannedInChannelError:
                 slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Failed to send to channel {group}, due to account being banned in channel, sleeping for 7200 seconds", 0.01)
+                embed = Embed(
+                description=f'Group {group} got **banned** error! :x:',
+                color=0x03fc73,
+                timestamp='now'
+                )
+                image1 = 'https://i.imgur.com/Jkg9O7Q.png'
+                embed.set_author(name='Telegram Ad-Bot', icon_url=image1)
+                embed.add_field(name='Banned error', value=f'{group} :x:')
+                embed.add_field(name='Time', value=f'{current_time} :clock1:')
+                embed.set_footer(text=f'Telegram Ad-Bot | {nickname}', icon_url=image1)
+                embed.set_thumbnail(image1)
+                hook.send(embed=embed)
                 time.sleep(7200)
             except errors.rpcerrorlist.ChatRestrictedError:
                 slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Failed to send to channel {group}, due to chat being restricted, sleeping for 30 seconds", 0.01)
+                embed = Embed(
+                description=f'Group {group} got **restricted** error! :x:',
+                color=0x03fc73,
+                timestamp='now'
+                )
+                image1 = 'https://i.imgur.com/Jkg9O7Q.png'
+                embed.set_author(name='Telegram Ad-Bot', icon_url=image1)
+                embed.add_field(name='Restricted error', value=f'{group} :x:')
+                embed.add_field(name='Time', value=f'{current_time} :clock1:')
+                embed.set_footer(text=f'Telegram Ad-Bot | {nickname}', icon_url=image1)
+                embed.set_thumbnail(image1)
+                hook.send(embed=embed)
                 time.sleep(30)
+            except ValueError:
+                slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Failed to send to channel {group}, due to it being non-existent.", 0.01)
+                embed = Embed(
+                description=f'Group {group} got **non-existent** error! :x:',
+                color=0x03fc73,
+                timestamp='now'
+                )
+                image1 = 'https://i.imgur.com/Jkg9O7Q.png'
+                embed.set_author(name='Telegram Ad-Bot', icon_url=image1)
+                embed.add_field(name='Non-existent error', value=f'{group} :x:')
+                embed.add_field(name='Time', value=f'{current_time} :clock1:')
+                embed.set_footer(text=f'Telegram Ad-Bot | {nickname}', icon_url=image1)
+                embed.set_thumbnail(image1)
+                hook.send(embed=embed)
+                time.sleep(1)
         slow_type(Fore.YELLOW + "Sleep: " + Style.RESET_ALL + f" Sleeping for {wait2} second(s), because all groups have been messaged.", 0.01)
-        os.system(f"title Shillify Telegram - Sleeping... - {sCount} message(s) sent this session.")
+        embed = Embed(
+        description='All groups have been **messaged** successfully! :purple_heart:',
+        color=0x03fc73,
+        timestamp='now'
+        )
+        image1 = 'https://i.imgur.com/Jkg9O7Q.png'
+        embed.set_author(name='Telegram Ad-Bot', icon_url=image1)
+        embed.add_field(name='Ad sent', value=f'{driver.title} :white_check_mark:')
+        embed.add_field(name='Time', value=f'{current_time} :clock1:')
+        embed.set_footer(text=f'Telegram Ad-Bot | {nickname}', icon_url=image1)
+        embed.set_thumbnail(image1)
+        hook.send(embed=embed)
         time.sleep(wait2)
 
 
 client.start()
 client.loop.run_until_complete(x())
+
+@client.on(events.NewMessage(pattern='(?i)hi|hello'))
+async def handler(event):
+    await event.respond('Hey! Open a ticket in my discord server for any questions or to get support: discord.gg/kws')
