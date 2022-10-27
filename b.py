@@ -323,6 +323,11 @@ async def x():
 client.start()
 client.loop.run_until_complete(x())
 
-@client.on(events.NewMessage(pattern='(?i)hi|hello'))
-async def handler(event):
-    await event.respond(automessage)
+@client.on(events.NewMessage(incoming=True))
+async def handle_new_message(event):
+    if event.is_private:  # only auto-reply to private chats
+        from_ = await event.client.get_entity(event.from_id)  # this lookup will be cached by telethon
+        if not from_.bot:  # don't auto-reply to bots
+            print(time.asctime(), '-', event.message)  # optionally log time and message
+            time.sleep(1)  # pause for 1 second to rate-limit automatic replies
+            await event.respond(automessage)
