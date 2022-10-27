@@ -136,7 +136,7 @@ with open("config.txt", "a+") as config:
             time.sleep(3)
             exit()
 
-client = TelegramClient('anon', api_id, api_hash)
+client = TelegramClient('anon', api_id, api_hash, sequential_updates=True)
 
 groups = open("groups.txt", "r+").read().strip().split("\n")
 found_groups = []
