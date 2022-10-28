@@ -1,6 +1,6 @@
 ############################IMPORTS################################
 import asyncio, time, os, contextlib
-from telethon import TelegramClient, errors, sync, events
+from telethon.sync import TelegramClient, events, errors
 from telethon.tl.functions.channels import GetFullChannelRequest
 from colorama import Fore, Back, Style, init
 from dhooks import Webhook, Embed
@@ -319,6 +319,15 @@ async def x():
         hook.send(embed=embed)
         time.sleep(wait2)
 
-
 client.start()
+
+@client.on(events.NewMessage(incoming=True))
+async def handle_new_message(event):
+    if event.is_private:
+        from_ = await event.client.get_entity(event.from_id)
+        if not from_.bot:
+            print(time.asctime(), '-', event.message)
+            time.sleep(1)
+            await event.respond(automessage)
+
 client.loop.run_until_complete(x())
