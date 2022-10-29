@@ -6,9 +6,12 @@ from telethon.tl.functions.channels import GetFullChannelRequest, JoinChannelReq
 from colorama import Fore, Back, Style, init
 from dhooks import Webhook, Embed
 from datetime import datetime
-hook = Webhook("")  # Discord embed logs
+wait1 = 17 # How long to wait between sending each message (seconds)
+wait2 = 1800 # How long to wait to start again after all groups have been messaged (seconds)
+nickname = "" # Main account username for notification purposes
+webhook_url= ""  # For logging purposes
 automessage = 'Hey! Open a ticket in my discord server for any questions or to get support: discord.gg/kws' # Auto message to respond when you are afk
-trackgroups = {"doscord", "tokens_404"} # Group(s) to keep track if the scrip still running (optional)
+trackgroups = {"", ""} # Group(s) to keep track if the scrip still running
 #############################CODE##################################
 
 def slow_type(text, speed, newLine = True):
@@ -75,16 +78,43 @@ if os.stat('message.txt').st_size == 0:
     time.sleep(5)
     exit()
 
-clear()
-slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f" How long do you want to wait between each message? (seconds): ", 0.0001)
-wait1 = int(input())
-clear()
-slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f" How long do you want to wait after all groups have been messaged? (seconds): ", 0.0001)
-wait2 = int(input())
-clear()
-slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f"Enter your telegram username (for notifications): ", 0.0001)
-nickname = input()
-clear()
+if not wait1:
+    clear()
+    slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f" How long do you want to wait between each message? (seconds): ", 0.0001)
+    wait1 = int(input())
+    clear()
+
+if not wait2:
+    clear()
+    slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f" How long do you want to wait after all groups have been messaged? (seconds): ", 0.0001)
+    wait2 = int(input())
+    clear()
+
+if not nickname:
+    clear()
+    slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f"Enter your telegram username (for notifications): ", 0.0001)
+    nickname = input()
+    clear()
+
+if not webhook_url:
+    clear()
+    slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f"Enter your discord webhook url: ", 0.0001)
+    webhook_url = input()
+    clear()
+
+if not automessage:
+    clear()
+    slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f"Enter your auto message: ", 0.0001)
+    automessage = input()
+    clear()
+
+if not trackgroups:
+    clear()
+    slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f"Enter your track groups separated by commas and without 't.me/' part | Ex: group1, group2, group3: ", 0.0001)
+    trackgroups = input()
+    trackgroups = trackgroups.split(',')
+    trackgroups = [x.strip() for x in trackgroups]
+    clear()
 
 intro = f"""
 {Fore.MAGENTA}═══════════════════════════════════════════════════════════════════════════════════════════{Fore.RESET}
@@ -102,6 +132,7 @@ logs = f"""
 {Fore.MAGENTA}╰───────────────╯{Fore.RESET}
 """
 
+hook = Webhook(webhook_url)  # Discord embed logs
 now = datetime.now()
 current_time = now.strftime("%H:%M:%S")
 embed = Embed(
