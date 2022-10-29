@@ -1,4 +1,4 @@
-# shillify-telegram
+# Shillify Telegram
 Telegram group advertiser. Useful for marketplaces/sellers.
 # Setting up
 Basically it has auto config generator so just run it.
