@@ -82,7 +82,7 @@ clear()
 slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f" How long do you want to wait after all groups have been messaged? (seconds): ", 0.0001)
 wait2 = int(input())
 clear()
-slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f"Enter your nickname: ", 0.0001)
+slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f"Enter your telegram username (for notifications): ", 0.0001)
 nickname = input()
 clear()
 
