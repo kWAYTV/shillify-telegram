@@ -48,10 +48,10 @@ check_config()
 if os.stat('config.txt').st_size == 0:
     slow_type(Fore.RED + "Error: " + Style.RESET_ALL + 'config.txt is empty, making one...', 0.0001)
     clear()
-    slow_type(Fore.BLUE + "Input: " + Style.RESET_ALL + f"Enter your ApiID:", 0.0001)
+    slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f"Enter your ApiID:", 0.0001)
     apiId = input()
     clear()
-    slow_type(Fore.BLUE + "Input: " + Style.RESET_ALL + f"Enter your ApiHash:", 0.0001)
+    slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f"Enter your ApiHash:", 0.0001)
     apiHash = input()
     config = open('config.txt', 'w')
     config.write(apiId + ':' + apiHash)
@@ -60,7 +60,7 @@ if os.stat('config.txt').st_size == 0:
 
 if os.stat('groups.txt').st_size == 0:
     slow_type(Fore.RED + "Error: " + Style.RESET_ALL + 'groups.txt is empty', 0.0001)
-    slow_type(Fore.BLUE + "Input: " + Style.RESET_ALL + f"Please enter your groups separated by commas and without 't.me/' part | Ex: group1, group2, group3: ", 0.0001)
+    slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f"Please enter your groups separated by commas and without 't.me/' part | Ex: group1, group2, group3: ", 0.0001)
     group_list = input()
     group_list = group_list.split(',')
     group_list = [x.strip() for x in group_list]
@@ -76,13 +76,13 @@ if os.stat('message.txt').st_size == 0:
     exit()
 
 clear()
-slow_type(Fore.BLUE + "Input: " + Style.RESET_ALL + f" How long do you want to wait between each message? (seconds): ", 0.0001)
+slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f" How long do you want to wait between each message? (seconds): ", 0.0001)
 wait1 = int(input())
 clear()
-slow_type(Fore.BLUE + "Input: " + Style.RESET_ALL + f" How long do you want to wait after all groups have been messaged? (seconds): ", 0.0001)
+slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f" How long do you want to wait after all groups have been messaged? (seconds): ", 0.0001)
 wait2 = int(input())
 clear()
-slow_type(Fore.BLUE + "Input: " + Style.RESET_ALL + f"Enter your nickname: ", 0.0001)
+slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f"Enter your nickname: ", 0.0001)
 nickname = input()
 clear()
 
@@ -152,7 +152,7 @@ message = open("message.txt", "r+").read().strip()
 async def join():
     seen = []
 	
-    slow_type(Fore.BLUE + "Input: " + Style.RESET_ALL + f" Do you want to join groups? (y/n): ", 0.0001)
+    slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f" Do you want to join groups? (y/n): ", 0.0001)
     option = input()
     if option == "" or "n" in option: return
     print()
@@ -371,6 +371,8 @@ async def shill():
         for group in trackgroups:
             if group not in messaged_groups:
                 await client.send_message(group, message)
+            else:
+                continue
         slow_type(Fore.YELLOW + "Sleep: " + Style.RESET_ALL + f" Sleeping for {wait2} second(s), because all groups have been messaged.", 0.0001)
         await client.send_message(f'{nickname}', f'✅ Finished advertising! \n🕛Sleeping for {wait2} seconds(s)')
         now = datetime.now()
