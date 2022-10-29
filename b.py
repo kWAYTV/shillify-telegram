@@ -1,5 +1,5 @@
 ############################IMPORTS################################
-import asyncio, time, os, contextlib
+import asyncio, time, os, contextlib, keyboard
 from telethon.sync import TelegramClient, events, errors
 from telethon.tl.functions.channels import GetFullChannelRequest
 from colorama import Fore, Back, Style, init
@@ -7,7 +7,7 @@ from dhooks import Webhook, Embed
 from datetime import datetime
 hook = Webhook("")  # Discord embed logs
 automessage = 'Hey! Open a ticket in my discord server for any questions or to get support: discord.gg/kws' # Auto message to respond when you are afk
-trackgroup = "" # Group to keep track if the scrip still running (optional)
+trackgroup = {"doscord", "tokens_404"} # Group(s) to keep track if the scrip still running (optional)
 #############################CODE##################################
 
 def slow_type(text, speed, newLine = True):
@@ -140,7 +140,7 @@ with open("config.txt", "a+") as config:
 
 client = TelegramClient('anon', api_id, api_hash, sequential_updates=True)
 
-groups = open("groups.txt", "r+").read().strip().split("\n")
+groups = open("groups.txt", "r+").readlines()
 slow_type(Fore.BLUE + "Found " + Style.RESET_ALL + f"{len(groups)} groups in groups.txt", 0.0001)
 found_groups = []
 message = open("message.txt", "r+").read().strip()
@@ -170,13 +170,14 @@ async def x():
         sCount=0
         messaged_groups = []
         slow_type(Fore.BLUE + "Sending message to " + Style.RESET_ALL + f"{len(found_groups)} groups", 0.0001)
-        if trackgroup and trackgroup not in found_groups:
-            found_groups.append(trackgroup)
+        for g in trackgroup:
+            if trackgroup and g not in found_groups:
+                found_groups.append(g)
         for found_group in found_groups:
             group = found_group
-            if group in messaged_groups:
-                continue
             try:
+                if group in messaged_groups:
+                    continue
                 await client.send_message(group, message)
                 slow_type(Fore.GREEN + "Success: " + Style.RESET_ALL + f" Message sent to {group}, sleeping for {wait1} second(s)", 0.0001)
                 messaged_groups.append(group)
@@ -347,8 +348,7 @@ async def x():
         )
         image1 = 'https://i.imgur.com/Jkg9O7Q.png'
         embed.set_author(name='Telegram Ad-Bot', icon_url=image1)
-        embed.add_field(name="Messages Sent", value=f"{sCount} Groups messaged :smiley:")
-        embed.add_field(name='Group', value=f'{group} :magic_wand:')
+        embed.add_field(name='W Groups', value=f'{sCount} :magic_wand:')
         embed.add_field(name='Time', value=f'{current_time} :clock1:')
         embed.set_footer(text=f'Telegram Ad-Bot | {nickname}', icon_url=image1)
         embed.set_thumbnail(image1)
@@ -362,7 +362,8 @@ async def handle_new_message(event):
     if event.is_private:
         from_ = await event.client.get_entity(event.from_id)
         if not from_.bot:
-            print("Message autoresponse: " + time.asctime(), '-', event.message)
+            print("Autoreplying...: " + time.asctime(), '-', event.message)
+            slow_type(Fore.MAGENTA + f"Autoreplying...: {Fore.RESET} -  Time: {time.asctime()} - Event: {event.message}.")
             time.sleep(1)
             await event.respond(automessage)
 
