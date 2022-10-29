@@ -2,7 +2,7 @@
 import asyncio, time, os, contextlib
 from telethon import TelegramClient
 from telethon import events, errors, functions
-from telethon.tl.functions.channels import GetFullChannelRequest
+from telethon.tl.functions.channels import GetFullChannelRequest, JoinChannelRequest
 from colorama import Fore, Back, Style, init
 from dhooks import Webhook, Embed
 from datetime import datetime
@@ -166,7 +166,7 @@ async def join():
                 if "t.me" in invite: code = invite.split("t.me/")[1]
                 else: code = invite
                 
-                await self.client(functions.channels.JoinChannelRequest(code))
+                await client(JoinChannelRequest(code))
                 slow_type(Fore.GREEN + "OK: " + Style.RESET_ALL + "Joined group: " + invite, 0.0001)
                 break
             except errors.FloodWaitError as e:
