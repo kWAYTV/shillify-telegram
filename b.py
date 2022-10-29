@@ -23,33 +23,33 @@ def rsCount():
 
 clear = lambda: os.system('cls' if os.name in ('nt', 'dos') else 'clear')
 
-slow_type(Fore.GREEN + "Started!: " + Style.RESET_ALL + "Checking for files...", 0.01)
+slow_type(Fore.GREEN + "Started!: " + Style.RESET_ALL + "Checking for files...", 0.0001)
 def check_config():
     if not os.path.isfile('groups.txt'):
-        slow_type(Fore.RED + "Error: " + Style.RESET_ALL + 'No groups.txt...', 0.01)
-        slow_type('Creating groups.txt...', 0.01)
+        slow_type(Fore.RED + "Error: " + Style.RESET_ALL + 'No groups.txt...', 0.0001)
+        slow_type('Creating groups.txt...', 0.0001)
         open('groups.txt', 'w').close()
         clear()
     if not os.path.isfile('config.txt'):
-        slow_type(Fore.RED + "Error: " + Style.RESET_ALL + 'No config.txt...', 0.01)
-        slow_type('Creating config.txt...', 0.01)
+        slow_type(Fore.RED + "Error: " + Style.RESET_ALL + 'No config.txt...', 0.0001)
+        slow_type('Creating config.txt...', 0.0001)
         open('config.txt', 'w').close()
         clear()
     if not os.path.isfile('message.txt'):
-        slow_type(Fore.RED + "Error: " + Style.RESET_ALL + 'No message.txt...', 0.01)
-        slow_type('Creating message.txt...', 0.01)
+        slow_type(Fore.RED + "Error: " + Style.RESET_ALL + 'No message.txt...', 0.0001)
+        slow_type('Creating message.txt...', 0.0001)
         open('message.txt', 'w').close()
         clear()
 
 check_config()
 
 if os.stat('config.txt').st_size == 0:
-    slow_type(Fore.RED + "Error: " + Style.RESET_ALL + 'config.txt is empty, making one...', 0.01)
+    slow_type(Fore.RED + "Error: " + Style.RESET_ALL + 'config.txt is empty, making one...', 0.0001)
     clear()
-    slow_type(Fore.BLUE + "Input: " + Style.RESET_ALL + f"Enter your ApiID:", 0.01)
+    slow_type(Fore.BLUE + "Input: " + Style.RESET_ALL + f"Enter your ApiID:", 0.0001)
     apiId = input()
     clear()
-    slow_type(Fore.BLUE + "Input: " + Style.RESET_ALL + f"Enter your ApiHash:", 0.01)
+    slow_type(Fore.BLUE + "Input: " + Style.RESET_ALL + f"Enter your ApiHash:", 0.0001)
     apiHash = input()
     config = open('config.txt', 'w')
     config.write(apiId + ':' + apiHash)
@@ -57,8 +57,8 @@ if os.stat('config.txt').st_size == 0:
     clear()
 
 if os.stat('groups.txt').st_size == 0:
-    slow_type(Fore.RED + "Error: " + Style.RESET_ALL + 'groups.txt is empty', 0.01)
-    slow_type(Fore.BLUE + "Input: " + Style.RESET_ALL + f"Please enter your groups separated by commas and without 't.me/' part | Ex: group1, group2, group3: ", 0.01)
+    slow_type(Fore.RED + "Error: " + Style.RESET_ALL + 'groups.txt is empty', 0.0001)
+    slow_type(Fore.BLUE + "Input: " + Style.RESET_ALL + f"Please enter your groups separated by commas and without 't.me/' part | Ex: group1, group2, group3: ", 0.0001)
     group_list = input()
     group_list = group_list.split(',')
     group_list = [x.strip() for x in group_list]
@@ -68,19 +68,19 @@ if os.stat('groups.txt').st_size == 0:
     clear()
 
 if os.stat('message.txt').st_size == 0:
-    slow_type(Fore.RED + "Error: " + Style.RESET_ALL + 'message.txt is empty', 0.01)
-    slow_type(Fore.RED + "Error: " + Style.RESET_ALL + 'Please enter your message and restart the tool', 0.01)
+    slow_type(Fore.RED + "Error: " + Style.RESET_ALL + 'message.txt is empty', 0.0001)
+    slow_type(Fore.RED + "Error: " + Style.RESET_ALL + 'Please enter your message and restart the tool', 0.0001)
     time.sleep(5)
     exit()
 
 clear()
-slow_type(Fore.BLUE + "Input: " + Style.RESET_ALL + f" How long do you want to wait between each message? (seconds): ", 0.01)
+slow_type(Fore.BLUE + "Input: " + Style.RESET_ALL + f" How long do you want to wait between each message? (seconds): ", 0.0001)
 wait1 = int(input())
 clear()
-slow_type(Fore.BLUE + "Input: " + Style.RESET_ALL + f" How long do you want to wait after all groups have been messaged? (seconds): ", 0.01)
+slow_type(Fore.BLUE + "Input: " + Style.RESET_ALL + f" How long do you want to wait after all groups have been messaged? (seconds): ", 0.0001)
 wait2 = int(input())
 clear()
-slow_type(Fore.BLUE + "Input: " + Style.RESET_ALL + f"Enter your nickname: ", 0.01)
+slow_type(Fore.BLUE + "Input: " + Style.RESET_ALL + f"Enter your nickname: ", 0.0001)
 nickname = input()
 clear()
 
@@ -122,25 +122,25 @@ with open("config.txt", "a+") as config:
     config.seek(0)
     cfg = config.read().strip()
     if cfg == "api_id:api_hash":
-        slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Please edit config.txt with your api id and api hash", 0.01)
+        slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Please edit config.txt with your api id and api hash", 0.0001)
         time.sleep(3)
         exit()
     else:
         try:
             api_id, api_hash = cfg.split(":")
         except ValueError:
-            slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Incorrectly formatted config, make sure your format is api_id:api_hash", 0.01)
+            slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Incorrectly formatted config, make sure your format is api_id:api_hash", 0.0001)
             time.sleep(3)
             exit()
         except Exception as e:
-            slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Unknown error ({e}), make sure your config is formatted correctly", 0.01)
+            slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Unknown error ({e}), make sure your config is formatted correctly", 0.0001)
             time.sleep(3)
             exit()
 
 client = TelegramClient('anon', api_id, api_hash, sequential_updates=True)
 
 groups = open("groups.txt", "r+").read().strip().split("\n")
-slow_type(Fore.BLUE + "Found " + Style.RESET_ALL + f"{len(groups)} groups in groups.txt", 0.01)
+slow_type(Fore.BLUE + "Found " + Style.RESET_ALL + f"{len(groups)} groups in groups.txt", 0.0001)
 found_groups = []
 message = open("message.txt", "r+").read().strip()
 error_groups = open("error_groups.txt", "w")
@@ -158,7 +158,7 @@ async def x():
     v = [found_group.lower() for found_group in found_groups]
     for group in groups:
         if group.lower() not in v:
-            slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f"Couldn't find group {group} in your account.", 0.01)
+            slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f"Couldn't find group {group} in your account.", 0.0001)
             with open("error_groups.txt", "a") as f:
                 f.write(f"{group} - Not found")
             continue
@@ -168,7 +168,7 @@ async def x():
     while True:
         sCount=0
         messaged_groups = []
-        slow_type(Fore.BLUE + "Sending message to " + Style.RESET_ALL + f"{len(found_groups)} groups", 0.01)
+        slow_type(Fore.BLUE + "Sending message to " + Style.RESET_ALL + f"{len(found_groups)} groups", 0.0001)
         if trackgroup and trackgroup not in found_groups:
             found_groups.append(trackgroup)
         for found_group in found_groups:
@@ -177,7 +177,7 @@ async def x():
                 continue
             try:
                 await client.send_message(group, message)
-                slow_type(Fore.GREEN + "Success: " + Style.RESET_ALL + f" Message sent to {group}, sleeping for {wait1} second(s)", 0.01)
+                slow_type(Fore.GREEN + "Success: " + Style.RESET_ALL + f" Message sent to {group}, sleeping for {wait1} second(s)", 0.0001)
                 messaged_groups.append(group)
                 sCount += 1
                 now = datetime.now()
@@ -196,7 +196,7 @@ async def x():
                 hook.send(embed=embed)
                 time.sleep(wait1)
             except errors.rpcerrorlist.SlowModeWaitError:
-                slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Failed to send to channel {group}, due to slowmode, sleeping for 300 seconds", 0.01)
+                slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Failed to send to channel {group}, due to slowmode, sleeping for 300 seconds", 0.0001)
                 with open("error_groups.txt", "r") as f:
                     f.write(f"{group}\n - Slow Mode")
                 now = datetime.now()
@@ -217,7 +217,7 @@ async def x():
                 time.sleep(wait1)
                 continue
             except errors.rpcerrorlist.ChatWriteForbiddenError:
-                slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Failed to send to channel {group}, due to the account being unable to write in chat, sleeping for 30 seconds", 0.01)
+                slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Failed to send to channel {group}, due to the account being unable to write in chat, sleeping for 30 seconds", 0.0001)
                 with open("error_groups.txt", "r") as f:
                     f.write(f"{group}\n - Write Forbidden")
                 now = datetime.now()
@@ -237,7 +237,7 @@ async def x():
                 time.sleep(30)
                 continue
             except errors.rpcerrorlist.ChannelPrivateError:
-                slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Failed to send to channel {group}, due to the channel being private, sleeping for 90 seconds", 0.01)
+                slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Failed to send to channel {group}, due to the channel being private, sleeping for 90 seconds", 0.0001)
                 with open("error_groups.txt", "r") as f:
                     f.write(f"{group}\n - Channel Private")
                 now = datetime.now()
@@ -257,7 +257,7 @@ async def x():
                 time.sleep(90)
                 continue
             except errors.rpcerrorlist.FloodWaitError:
-                slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Failed to send to channel {group}, due to flooding, sleeping for 600 seconds", 0.01)
+                slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Failed to send to channel {group}, due to flooding, sleeping for 600 seconds", 0.0001)
                 with open("error_groups.txt", "r") as f:
                     f.write(f"{group}\n - Flood")
                 now = datetime.now()
@@ -277,7 +277,7 @@ async def x():
                 time.sleep(600)
                 continue
             except errors.rpcerrorlist.UserBannedInChannelError:
-                slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Failed to send to channel {group}, due to account being banned in channel, sleeping for 7200 seconds", 0.01)
+                slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Failed to send to channel {group}, due to account being banned in channel, sleeping for 7200 seconds", 0.0001)
                 with open("error_groups.txt", "r") as f:
                     f.write(f"{group}\n - Banned in channel")
                 now = datetime.now()
@@ -297,7 +297,7 @@ async def x():
                 time.sleep(7200)
                 continue
             except errors.rpcerrorlist.ChatRestrictedError:
-                slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Failed to send to channel {group}, due to chat being restricted, sleeping for 30 seconds", 0.01)
+                slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Failed to send to channel {group}, due to chat being restricted, sleeping for 30 seconds", 0.0001)
                 with open("error_groups.txt", "r") as f:
                     f.write(f"{group}\n - Chat restricted")
                 now = datetime.now()
@@ -317,7 +317,7 @@ async def x():
                 time.sleep(30)
                 continue
             except ValueError:
-                slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Failed to send to channel {group}, due to it being non-existent.", 0.01)
+                slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Failed to send to channel {group}, due to it being non-existent.", 0.0001)
                 with open("error_groups.txt", "r") as f:
                     f.write(f"{group}\n - Non-existent")
                 now = datetime.now()
@@ -336,7 +336,7 @@ async def x():
                 hook.send(embed=embed)
                 time.sleep(1)
                 continue
-        slow_type(Fore.YELLOW + "Sleep: " + Style.RESET_ALL + f" Sleeping for {wait2} second(s), because all groups have been messaged.", 0.01)
+        slow_type(Fore.YELLOW + "Sleep: " + Style.RESET_ALL + f" Sleeping for {wait2} second(s), because all groups have been messaged.", 0.0001)
         now = datetime.now()
         current_time = now.strftime("%H:%M:%S")
         embed = Embed(
