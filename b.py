@@ -2,6 +2,7 @@
 import asyncio, time, os, contextlib
 from telethon import TelegramClient
 from telethon import events, errors, functions
+from telethon.tl.functions.channels import GetFullChannelRequest
 from colorama import Fore, Back, Style, init
 from dhooks import Webhook, Embed
 from datetime import datetime
