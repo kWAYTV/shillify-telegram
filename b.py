@@ -142,10 +142,11 @@ with open("config.txt", "a+") as config:
 client = TelegramClient('anon', api_id, api_hash, sequential_updates=True)
 
 groups = open("groups.txt", "r+").read().strip().split("\n")
+error_groups = open("error_groups.txt", "w")
 slow_type(Fore.BLUE + "Found " + Style.RESET_ALL + f"{len(groups)} groups in groups.txt", 0.0001)
 found_groups = []
+messaged_groups = []
 message = open("message.txt", "r+").read().strip()
-error_groups = open("error_groups.txt", "w")
 
 async def join():
     seen = []
@@ -198,13 +199,13 @@ async def shill():
 
     while True:
         sCount=0
-        messaged_groups = []
         slow_type(Fore.BLUE + "Sending message to " + Style.RESET_ALL + f"{len(found_groups)} groups", 0.0001)
         await client.send_message(f'{nickname}', f'**Started sending messages to {len(found_groups)} groups**')
         for found_group in found_groups: 
             group = found_group
             try:
                 if group in messaged_groups:
+                    slow_type(Fore.YELLOW + "SKIP: " + Style.RESET_ALL + f"Group {group} has already been messaged.", 0.0001)
                     continue
                 await client.send_message(group, message)
                 slow_type(Fore.GREEN + "Success: " + Style.RESET_ALL + f" Message sent to {group}, sleeping for {wait1} second(s)", 0.0001)
@@ -390,7 +391,7 @@ async def shill():
 async def start():
     try:
         await client.start()
-        await client.send_message(f'{nickname}', f'🚀Adbot powered **on**! \nFound {len(groups)} groups in the file.\nStarting to advertise...')
+        await client.send_message(f'{nickname}', f'🚀Adbot powered **on**! \nFound {len(groups)} groups in the file.\nStarting up...')
         await join()
         await shill()
     except Exception as e:
