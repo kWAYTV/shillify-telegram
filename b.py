@@ -358,7 +358,7 @@ async def x():
         time.sleep(wait2)
 
 client.start()
-client.send_message(f'{nickname}', f'🚀Adbot powered **on**! \nFound {len(groups)} in the file.\nStarting to advertise...')
+client.send_message(f'{nickname}', f'🚀Adbot powered **on**! \nFound {len(groups)} groups in the file.\nStarting to advertise...')
 
 @client.on(events.NewMessage(incoming=True))
 async def handle_new_message(event):
