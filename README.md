@@ -1,7 +1,7 @@
 # Shillify Telegram
 Telegram group advertiser. Useful for marketplaces/sellers.
 # Setting up
-Basically it has auto config generator so just run it.
+Basically it has auto config generator so just run it. Get your API ID/HASH from [this link](https://my.telegram.org/auth).
 # Links
 [Discord](https://discord.gg/MRNuVCXuTS)<br />
 [Telegram](https://t.me/kwaytv)<br />
