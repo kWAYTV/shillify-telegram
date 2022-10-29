@@ -6,14 +6,16 @@ from telethon.tl.functions.channels import GetFullChannelRequest, JoinChannelReq
 from colorama import Fore, Back, Style, init
 from dhooks import Webhook, Embed
 from datetime import datetime
-wait1 = 17 # How long to wait between sending each message (seconds)
-wait2 = 1800 # How long to wait to start again after all groups have been messaged (seconds)
+############################SETTINGS###############################
+wait1 = 0  # How long to wait between sending each message (seconds)
+wait2 = 0 # How long to wait to start again after all groups have been messaged (seconds)
 nickname = "" # Main account username for notification purposes
 webhook_url= ""  # For logging purposes
-automessage = 'Hey! Open a ticket in my discord server for any questions or to get support: discord.gg/kws' # Auto message to respond when you are afk
+automessage = '' # Auto message to respond when you are afk
 trackgroups = {"", ""} # Group(s) to keep track if the scrip still running
 #############################CODE##################################
 
+# Slow type function
 def slow_type(text, speed, newLine = True):
     for i in text:
         print(i, end = "", flush = True)
@@ -21,13 +23,16 @@ def slow_type(text, speed, newLine = True):
     if newLine: 
         print()
 
+# Counter and reset counter
 sCount=0
 def rsCount():
     sCount=0
 
+# Clear screen function
 clear = lambda: os.system('cls' if os.name in ('nt', 'dos') else 'clear')
 clear()
 
+# Checking for files
 slow_type(Fore.GREEN + "Started!: " + Style.RESET_ALL + "Checking for files...", 0.0001)
 def check_config():
     if not os.path.isfile('groups.txt'):
@@ -48,6 +53,7 @@ def check_config():
 
 check_config()
 
+# Checking if filled
 if os.stat('config.txt').st_size == 0:
     slow_type(Fore.RED + "Error: " + Style.RESET_ALL + 'config.txt is empty, making one...', 0.0001)
     clear()
@@ -78,13 +84,13 @@ if os.stat('message.txt').st_size == 0:
     time.sleep(5)
     exit()
 
-if not wait1:
+if not wait1 or wait1 == 0:
     clear()
     slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f" How long do you want to wait between each message? (seconds): ", 0.0001)
     wait1 = int(input())
     clear()
 
-if not wait2:
+if not wait2 or wait2 == 0:
     clear()
     slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f" How long do you want to wait after all groups have been messaged? (seconds): ", 0.0001)
     wait2 = int(input())
@@ -116,6 +122,7 @@ if not trackgroups:
     trackgroups = [x.strip() for x in trackgroups]
     clear()
 
+# Logo
 intro = f"""
 {Fore.MAGENTA}═══════════════════════════════════════════════════════════════════════════════════════════{Fore.RESET}
  ____ ____ ____ ____ ____ ____ ____ ____ _________ ____ ____ ____ ____ ____ ____ ____ ____ 
@@ -132,6 +139,7 @@ logs = f"""
 {Fore.MAGENTA}╰───────────────╯{Fore.RESET}
 """
 
+# Start webhook
 hook = Webhook(webhook_url)  # Discord embed logs
 now = datetime.now()
 current_time = now.strftime("%H:%M:%S")
@@ -152,6 +160,7 @@ clear()
 slow_type(intro + Style.RESET_ALL, 0.001)
 slow_type("\n" + logs + Style.RESET_ALL, 0.001)
 
+# Load API Data
 with open("config.txt", "a+") as config:
     config.seek(0)
     cfg = config.read().strip()
@@ -171,6 +180,7 @@ with open("config.txt", "a+") as config:
             time.sleep(3)
             exit()
 
+# Start client and settings
 client = TelegramClient('anon', api_id, api_hash, sequential_updates=True)
 
 groups = open("groups.txt", "r+").read().strip().split("\n")
@@ -180,6 +190,7 @@ found_groups = []
 messaged_groups = []
 message = open("message.txt", "r+").read().strip()
 
+# Join function
 async def join():
     seen = []
 	
@@ -248,9 +259,9 @@ async def join():
                 embed.set_thumbnail(image1)
                 hook.send(embed=embed)
                 break
-        
         await asyncio.sleep(0.8)
 
+# Advertise function
 async def shill():
     async for dialog in client.iter_dialogs(limit = None):
         if dialog.is_group:
@@ -465,6 +476,7 @@ async def shill():
         hook.send(embed=embed)
         time.sleep(wait2)
 
+# Start function
 async def start():
     try:
         await client.start()
@@ -476,6 +488,7 @@ async def start():
         time.sleep(3)
         exit()
 
+# Autoresponse
 @client.on(events.NewMessage(incoming=True))
 async def handle_new_message(event):
     if event.is_private:
@@ -486,4 +499,5 @@ async def handle_new_message(event):
             time.sleep(1)
             await event.respond(automessage)
 
+# Run the client
 client.loop.run_until_complete(start())
