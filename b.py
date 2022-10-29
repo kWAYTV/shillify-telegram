@@ -2,11 +2,12 @@
 import asyncio, time, os, contextlib
 from telethon import TelegramClient
 from telethon import events, errors, functions
-from telethon.tl.functions.channels import GetFullChannelRequest, JoinChannelRequest
+from telethon.tl.functions.channels import GetFullChannelRequest, JoinChannelRequest, LeaveChannelRequest
 from colorama import Fore, Back, Style, init
 from dhooks import Webhook, Embed
 from datetime import datetime
 ############################SETTINGS###############################
+ ## ALL OF THE SETTINGS ARE REQUIRED TO BE FILLED IN ##
 wait1 = 0  # How long to wait between sending each message (seconds)
 wait2 = 0 # How long to wait to start again after all groups have been messaged (seconds)
 nickname = "" # Main account username for notification purposes
@@ -180,15 +181,16 @@ with open("config.txt", "a+") as config:
             time.sleep(3)
             exit()
 
-# Start client and settings
+# Define client
 client = TelegramClient('anon', api_id, api_hash, sequential_updates=True)
 
+# Load files
 groups = open("groups.txt", "r+").read().strip().split("\n")
 error_groups = open("error_groups.txt", "w")
+message = open("message.txt", "r+").read().strip()
 slow_type(Fore.BLUE + "Found " + Style.RESET_ALL + f"{len(groups)} groups in groups.txt", 0.0001)
 found_groups = []
 messaged_groups = []
-message = open("message.txt", "r+").read().strip()
 
 # Join function
 async def join():
@@ -242,6 +244,58 @@ async def join():
                 embed.set_thumbnail(image1)
                 hook.send(embed=embed)
                 await asyncio.sleep(int(e.seconds))
+            except errors.ChannelsTooMuchError as e:
+                slow_type(Fore.RED + "ERROR: " + Style.RESET_ALL + "You have joined too many groups", 0.0001)
+                now = datetime.now()
+                current_time = now.strftime("%H:%M:%S")
+                embed = Embed(
+                description=f'You have joined too many groups',
+                color=0x9986a3,
+                timestamp='now'
+                )
+                image1 = 'https://i.imgur.com/Jkg9O7Q.png'
+                embed.set_author(name='Telegram Ad-Bot', icon_url=image1)
+                embed.add_field(name='Error', value=f'You have joined too many groups')
+                embed.add_field(name='Time', value=f'{current_time} :clock1:')
+                embed.set_footer(text=f'Telegram Ad-Bot | {nickname}', icon_url=image1)
+                embed.set_thumbnail(image1)
+                hook.send(embed=embed)
+                time.sleep(3)
+                exit()
+            except errors.ChannelInvalidError as e:
+                slow_type(Fore.RED + "ERROR: " + Style.RESET_ALL + "Invalid invite link: " + invite, 0.0001)
+                now = datetime.now()
+                current_time = now.strftime("%H:%M:%S")
+                embed = Embed(
+                description=f'Invalid invite link: {invite}',
+                color=0x9986a3,
+                timestamp='now'
+                )
+                image1 = 'https://i.imgur.com/Jkg9O7Q.png'
+                embed.set_author(name='Telegram Ad-Bot', icon_url=image1)
+                embed.add_field(name='Error', value=f'Invalid invite link: {invite}')
+                embed.add_field(name='Time', value=f'{current_time} :clock1:')
+                embed.set_footer(text=f'Telegram Ad-Bot | {nickname}', icon_url=image1)
+                embed.set_thumbnail(image1)
+                hook.send(embed=embed)
+                break
+            except errors.ChannelPrivateError as e:
+                slow_type(Fore.RED + "ERROR: " + Style.RESET_ALL + "Private group: " + invite, 0.0001)
+                now = datetime.now()
+                current_time = now.strftime("%H:%M:%S")
+                embed = Embed(
+                description=f'Private group: {invite}',
+                color=0x9986a3,
+                timestamp='now'
+                )
+                image1 = 'https://i.imgur.com/Jkg9O7Q.png'
+                embed.set_author(name='Telegram Ad-Bot', icon_url=image1)
+                embed.add_field(name='Error', value=f'Private group: {invite}')
+                embed.add_field(name='Time', value=f'{current_time} :clock1:')
+                embed.set_footer(text=f'Telegram Ad-Bot | {nickname}', icon_url=image1)
+                embed.set_thumbnail(image1)
+                hook.send(embed=embed)
+                break
             except Exception:
                 slow_type(Fore.RED + "FAIL: " + Style.RESET_ALL + "Failed to join group: " + invite, 0.0001)
                 now = datetime.now()
@@ -254,6 +308,161 @@ async def join():
                 image1 = 'https://i.imgur.com/Jkg9O7Q.png'
                 embed.set_author(name='Telegram Ad-Bot', icon_url=image1)
                 embed.add_field(name='Failed to join group', value=f'{invite}')
+                embed.add_field(name='Time', value=f'{current_time} :clock1:')
+                embed.set_footer(text=f'Telegram Ad-Bot | {nickname}', icon_url=image1)
+                embed.set_thumbnail(image1)
+                hook.send(embed=embed)
+                break
+        await asyncio.sleep(0.8)
+
+# Leave function
+async def leave():
+    seen = []
+	
+    slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f" Do you want to leave groups? (y/n): ", 0.0001)
+    option = input()
+    if option == "" or "n" in option: return
+    print()
+    
+    for invite in groups:
+        if invite in seen: continue
+        seen.append(seen)
+        
+        while True:
+            try:
+                if "t.me" in invite: code = invite.split("t.me/")[1]
+                else: code = invite
+                
+                await client(LeaveChannelRequest(code))
+                slow_type(Fore.GREEN + "OK: " + Style.RESET_ALL + "Left group: " + invite, 0.0001)
+                now = datetime.now()
+                current_time = now.strftime("%H:%M:%S")
+                embed = Embed(
+                description=f'Joined group: {invite}',
+                color=0x9986a3,
+                timestamp='now'
+                )
+                image1 = 'https://i.imgur.com/Jkg9O7Q.png'
+                embed.set_author(name='Telegram Ad-Bot', icon_url=image1)
+                embed.add_field(name='Left Group', value=f'{invite}')
+                embed.add_field(name='Time', value=f'{current_time} :clock1:')
+                embed.set_footer(text=f'Telegram Ad-Bot | {nickname}', icon_url=image1)
+                embed.set_thumbnail(image1)
+                hook.send(embed=embed)
+                break
+            except errors.FloodWaitError as e:
+                slow_type(Fore.YELLOW + "RATE: " + Style.RESET_ALL + "Ratelimited for " + str(e.seconds) + " seconds", 0.0001)
+                now = datetime.now()
+                current_time = now.strftime("%H:%M:%S")
+                embed = Embed(
+                description=f'Ratelimited for {str(e.seconds)} seconds',
+                color=0x9986a3,
+                timestamp='now'
+                )
+                image1 = 'https://i.imgur.com/Jkg9O7Q.png'
+                embed.set_author(name='Telegram Ad-Bot', icon_url=image1)
+                embed.add_field(name='Ratelimited', value=f'{str(e.seconds)} seconds')
+                embed.add_field(name='Time', value=f'{current_time} :clock1:')
+                embed.set_footer(text=f'Telegram Ad-Bot | {nickname}', icon_url=image1)
+                embed.set_thumbnail(image1)
+                hook.send(embed=embed)
+            except errors.ChannelInvalidError as e:
+                slow_type(Fore.RED + "FAIL: " + Style.RESET_ALL + "Failed to leave group (channel invalid): " + invite, 0.0001)
+                now = datetime.now()
+                current_time = now.strftime("%H:%M:%S")
+                embed = Embed(
+                description=f'Failed to leave group (channel invalid): {invite}',
+                color=0x9986a3,
+                timestamp='now'
+                )
+                image1 = 'https://i.imgur.com/Jkg9O7Q.png'
+                embed.set_author(name='Telegram Ad-Bot', icon_url=image1)
+                embed.add_field(name='Failed to leave group (channel invalid)', value=f'{invite}')
+                embed.add_field(name='Time', value=f'{current_time} :clock1:')
+                embed.set_footer(text=f'Telegram Ad-Bot | {nickname}', icon_url=image1)
+                embed.set_thumbnail(image1)
+                hook.send(embed=embed)
+                break
+            except errors.ChannelPrivateError as e:
+                slow_type(Fore.RED + "FAIL: " + Style.RESET_ALL + "Failed to leave group (channel private): " + invite, 0.0001)
+                now = datetime.now()
+                current_time = now.strftime("%H:%M:%S")
+                embed = Embed(
+                description=f'Failed to leave group (channel private): {invite}',
+                color=0x9986a3,
+                timestamp='now'
+                )
+                image1 = 'https://i.imgur.com/Jkg9O7Q.png'
+                embed.set_author(name='Telegram Ad-Bot', icon_url=image1)
+                embed.add_field(name='Failed to leave group (channel private)', value=f'{invite}')
+                embed.add_field(name='Time', value=f'{current_time} :clock1:')
+                embed.set_footer(text=f'Telegram Ad-Bot | {nickname}', icon_url=image1)
+                embed.set_thumbnail(image1)
+                hook.send(embed=embed)
+                break
+            except errors.ChannelPublicGroupNaError as e:
+                slow_type(Fore.RED + "FAIL: " + Style.RESET_ALL + "Failed to leave group (not avaiable): " + invite, 0.0001)
+                now = datetime.now()
+                current_time = now.strftime("%H:%M:%S")
+                embed = Embed(
+                description=f'Failed to leave group (not avaiable): {invite}',
+                color=0x9986a3,
+                timestamp='now'
+                )
+                image1 = 'https://i.imgur.com/Jkg9O7Q.png'
+                embed.set_author(name='Telegram Ad-Bot', icon_url=image1)
+                embed.add_field(name='Failed to leave group (not avaiable)', value=f'{invite}')
+                embed.add_field(name='Time', value=f'{current_time} :clock1:')
+                embed.set_footer(text=f'Telegram Ad-Bot | {nickname}', icon_url=image1)
+                embed.set_thumbnail(image1)
+                hook.send(embed=embed)
+                break
+            except errors.UserCreatorError as e:
+                slow_type(Fore.RED + "FAIL: " + Style.RESET_ALL + "Failed to leave group (you are the owner): " + invite, 0.0001)
+                now = datetime.now()
+                current_time = now.strftime("%H:%M:%S")
+                embed = Embed(
+                description=f'Failed to leave group (you are the owner): {invite}',
+                color=0x9986a3,
+                timestamp='now'
+                )
+                image1 = 'https://i.imgur.com/Jkg9O7Q.png'
+                embed.set_author(name='Telegram Ad-Bot', icon_url=image1)
+                embed.add_field(name='Failed to leave group (you are the owner)', value=f'{invite}')
+                embed.add_field(name='Time', value=f'{current_time} :clock1:')
+                embed.set_footer(text=f'Telegram Ad-Bot | {nickname}', icon_url=image1)
+                embed.set_thumbnail(image1)
+                hook.send(embed=embed)
+                break
+            except errors.UserNotParticipantError as e:
+                slow_type(Fore.RED + "FAIL: " + Style.RESET_ALL + "Failed to leave group (you are not a member): " + invite, 0.0001)
+                now = datetime.now()
+                current_time = now.strftime("%H:%M:%S")
+                embed = Embed(
+                description=f'Failed to leave group (you are not a member): {invite}',
+                color=0x9986a3,
+                timestamp='now'
+                )
+                image1 = 'https://i.imgur.com/Jkg9O7Q.png'
+                embed.set_author(name='Telegram Ad-Bot', icon_url=image1)
+                embed.add_field(name='Failed to leave group (you are not a member)', value=f'{invite}')
+                embed.add_field(name='Time', value=f'{current_time} :clock1:')
+                embed.set_footer(text=f'Telegram Ad-Bot | {nickname}', icon_url=image1)
+                embed.set_thumbnail(image1)
+                hook.send(embed=embed)
+                break
+            except Exception as e:
+                slow_type(Fore.RED + "FAIL: " + Style.RESET_ALL + "Failed to leave group: " + invite, 0.0001)
+                now = datetime.now()
+                current_time = now.strftime("%H:%M:%S")
+                embed = Embed(
+                description=f'Failed to leave group: {invite}',
+                color=0x9986a3,
+                timestamp='now'
+                )
+                image1 = 'https://i.imgur.com/Jkg9O7Q.png'
+                embed.set_author(name='Telegram Ad-Bot', icon_url=image1)
+                embed.add_field(name='Failed to leave group', value=f'{invite}')
                 embed.add_field(name='Time', value=f'{current_time} :clock1:')
                 embed.set_footer(text=f'Telegram Ad-Bot | {nickname}', icon_url=image1)
                 embed.set_thumbnail(image1)
@@ -482,6 +691,7 @@ async def start():
         await client.start()
         await client.send_message(f'{nickname}', f'🚀Adbot powered **on**! \nFound {len(groups)} groups in the file.\nStarting up...')
         await join()
+        await leave()
         await shill()
     except Exception as e:
         slow_type(Fore.RED + "Error: " + Style.RESET_ALL + str(e), 0.0001)
