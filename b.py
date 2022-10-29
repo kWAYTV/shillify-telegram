@@ -1,6 +1,6 @@
 ############################IMPORTS################################
 import asyncio, time, os, contextlib
-from telethon.sync import TelegramClient, events, errors
+from telethon.sync import TelegramClient, events, errors, functions
 from telethon.tl.functions.channels import GetFullChannelRequest
 from colorama import Fore, Back, Style, init
 from dhooks import Webhook, Embed
@@ -81,6 +81,8 @@ clear()
 slow_type(Fore.BLUE + "Input: " + Style.RESET_ALL + f" How long do you want to wait after all groups have been messaged? (seconds): ", 0.0001)
 wait2 = int(input())
 clear()
+slow_type(Fore.BLUE + "Input: " + Style.RESET_ALL + f" Do you want to join groups?: ", 0.0001)
+join = input()
 slow_type(Fore.BLUE + "Input: " + Style.RESET_ALL + f"Enter your nickname: ", 0.0001)
 nickname = input()
 clear()
@@ -141,13 +143,41 @@ with open("config.txt", "a+") as config:
 
 client = TelegramClient('anon', api_id, api_hash, sequential_updates=True)
 
-groups = open("groups.txt", "r+").readlines()
+groups = open("groups.txt", "r+").read().strip().split("\n")
 slow_type(Fore.BLUE + "Found " + Style.RESET_ALL + f"{len(groups)} groups in groups.txt", 0.0001)
 found_groups = []
 message = open("message.txt", "r+").read().strip()
 error_groups = open("error_groups.txt", "w")
 
-async def x():
+async def join():
+    seen = []
+		
+    option = input(slow_type(Fore.BLUE + "Input: " + Style.RESET_ALL + f" Do you want to join groups? (y/n): ", 0.0001))
+    if option == "" or "n" in option: return
+    print()
+    
+    for invite in groups:
+        if invite in seen: continue
+        seen.append(seen)
+        
+        while True:
+            try:
+                if "t.me" in invite: code = invite.split("t.me/")[1]
+                else: code = invite
+                
+                await self.client(functions.channels.JoinChannelRequest(code))
+                logging.info("Successfully joined group: " + invite)
+                break
+            except errors.FloodWaitError as e:
+                logging.info("Ratelimited for " + str(e.seconds) + " seconds")
+                await asyncio.sleep(int(e.seconds))
+            except Exception:
+                logging.info("Failed to join \x1b[38;5;147m%s\x1b[0m." % (invite))
+                break
+        
+        await asyncio.sleep(0.8)
+
+async def shill():
     async for dialog in client.iter_dialogs(limit = None):
         if dialog.is_group:
             with contextlib.suppress(Exception):
@@ -171,6 +201,7 @@ async def x():
         sCount=0
         messaged_groups = []
         slow_type(Fore.BLUE + "Sending message to " + Style.RESET_ALL + f"{len(found_groups)} groups", 0.0001)
+        await client.send_message(f'{nickname}', f'**Started sending messages to {len(found_groups)} groups**')
         for found_group in found_groups: 
             group = found_group
             try:
@@ -340,7 +371,7 @@ async def x():
             if group not in messaged_groups:
                 await client.send_message(group, message)
         slow_type(Fore.YELLOW + "Sleep: " + Style.RESET_ALL + f" Sleeping for {wait2} second(s), because all groups have been messaged.", 0.0001)
-        client.send_message(f'{nickname}', f'✅ Finished advertising! \n🕛Sleeping for {wait2} seconds(s)')
+        await client.send_message(f'{nickname}', f'✅ Finished advertising! \n🕛Sleeping for {wait2} seconds(s)')
         now = datetime.now()
         current_time = now.strftime("%H:%M:%S")
         embed = Embed(
@@ -357,8 +388,16 @@ async def x():
         hook.send(embed=embed)
         time.sleep(wait2)
 
-client.start()
-client.send_message(f'{nickname}', f'🚀Adbot powered **on**! \nFound {len(groups)} groups in the file.\nStarting to advertise...')
+async def start():
+    try:
+        await client.start()
+        await client.send_message(f'{nickname}', f'🚀Adbot powered **on**! \nFound {len(groups)} groups in the file.\nStarting to advertise...')
+        join()
+        shill()
+    except Exception as e:
+        slow_type(Fore.RED + "Error: " + Style.RESET_ALL + str(e), 0.0001)
+        time.sleep(3)
+        exit()
 
 @client.on(events.NewMessage(incoming=True))
 async def handle_new_message(event):
@@ -366,8 +405,8 @@ async def handle_new_message(event):
         from_ = await event.client.get_entity(event.from_id)
         if not from_.bot:
             print("Autoreplying...: " + time.asctime(), '-', event.message)
-            slow_type(Fore.MAGENTA + f"Autoreplying...: {Fore.RESET} -  Time: {time.asctime()} - Event: {event.message}.")
+            slow_type(Fore.MAGENTA + f"Autoreplying...: {Fore.RESET} -  Time: {time.asctime()} - Event: {event.message}.", 0.00001)
             time.sleep(1)
             await event.respond(automessage)
 
-client.loop.run_until_complete(x())
+client.loop.run_until_complete(start())
