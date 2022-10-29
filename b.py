@@ -5,8 +5,9 @@ from telethon.tl.functions.channels import GetFullChannelRequest
 from colorama import Fore, Back, Style, init
 from dhooks import Webhook, Embed
 from datetime import datetime
-hook = Webhook("")
-automessage = 'Hey! Open a ticket in my discord server for any questions or to get support: discord.gg/kws'
+hook = Webhook("")  # Discord embed logs
+automessage = 'Hey! Open a ticket in my discord server for any questions or to get support: discord.gg/kws' # Auto message to respond when you are afk
+trackgroup = "" # Group to keep track if the scrip still running (optional)
 #############################CODE##################################
 
 def slow_type(text, speed, newLine = True):
@@ -57,7 +58,7 @@ if os.stat('config.txt').st_size == 0:
 
 if os.stat('groups.txt').st_size == 0:
     slow_type(Fore.RED + "Error: " + Style.RESET_ALL + 'groups.txt is empty', 0.01)
-    slow_type(Fore.BLUE + "Input: " + Style.RESET_ALL + f"Please enter your groups sepparated by commas and without 't.me/' part | Ex: group1, group2, group3: ", 0.01)
+    slow_type(Fore.BLUE + "Input: " + Style.RESET_ALL + f"Please enter your groups separated by commas and without 't.me/' part | Ex: group1, group2, group3: ", 0.01)
     group_list = input()
     group_list = group_list.split(',')
     group_list = [x.strip() for x in group_list]
@@ -139,11 +140,13 @@ with open("config.txt", "a+") as config:
 client = TelegramClient('anon', api_id, api_hash, sequential_updates=True)
 
 groups = open("groups.txt", "r+").read().strip().split("\n")
+slow_type(Fore.BLUE + "Found " + Style.RESET_ALL + f"{len(groups)} groups in groups.txt", 0.01)
 found_groups = []
 message = open("message.txt", "r+").read().strip()
+error_groups = open("error_groups.txt", "w")
 
 async def x():
-    async for dialog in client.iter_dialogs():
+    async for dialog in client.iter_dialogs(limit = None):
         if dialog.is_group:
             with contextlib.suppress(Exception):
                 inv = await client(GetFullChannelRequest(dialog.id))
@@ -155,17 +158,27 @@ async def x():
     v = [found_group.lower() for found_group in found_groups]
     for group in groups:
         if group.lower() not in v:
+            slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f"Couldn't find group {group} in your account.", 0.01)
+            with open("error_groups.txt", "a") as f:
+                f.write(f"{group} - Not found")
             continue
 
     slow_type("", 0.00001)
 
     while True:
         sCount=0
+        messaged_groups = []
+        slow_type(Fore.BLUE + "Sending message to " + Style.RESET_ALL + f"{len(found_groups)} groups", 0.01)
+        if trackgroup and trackgroup not in found_groups:
+            found_groups.append(trackgroup)
         for found_group in found_groups:
             group = found_group
+            if group in messaged_groups:
+                continue
             try:
                 await client.send_message(group, message)
                 slow_type(Fore.GREEN + "Success: " + Style.RESET_ALL + f" Message sent to {group}, sleeping for {wait1} second(s)", 0.01)
+                messaged_groups.append(group)
                 sCount += 1
                 now = datetime.now()
                 current_time = now.strftime("%H:%M:%S")
@@ -184,6 +197,8 @@ async def x():
                 time.sleep(wait1)
             except errors.rpcerrorlist.SlowModeWaitError:
                 slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Failed to send to channel {group}, due to slowmode, sleeping for 300 seconds", 0.01)
+                with open("error_groups.txt", "r") as f:
+                    f.write(f"{group}\n - Slow Mode")
                 now = datetime.now()
                 current_time = now.strftime("%H:%M:%S")
                 embed = Embed(
@@ -200,8 +215,11 @@ async def x():
                 hook.send(embed=embed)
                 time.sleep(300)
                 time.sleep(wait1)
+                continue
             except errors.rpcerrorlist.ChatWriteForbiddenError:
                 slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Failed to send to channel {group}, due to the account being unable to write in chat, sleeping for 30 seconds", 0.01)
+                with open("error_groups.txt", "r") as f:
+                    f.write(f"{group}\n - Write Forbidden")
                 now = datetime.now()
                 current_time = now.strftime("%H:%M:%S")
                 embed = Embed(
@@ -217,8 +235,11 @@ async def x():
                 embed.set_thumbnail(image1)
                 hook.send(embed=embed)
                 time.sleep(30)
+                continue
             except errors.rpcerrorlist.ChannelPrivateError:
                 slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Failed to send to channel {group}, due to the channel being private, sleeping for 90 seconds", 0.01)
+                with open("error_groups.txt", "r") as f:
+                    f.write(f"{group}\n - Channel Private")
                 now = datetime.now()
                 current_time = now.strftime("%H:%M:%S")
                 embed = Embed(
@@ -234,8 +255,11 @@ async def x():
                 embed.set_thumbnail(image1)
                 hook.send(embed=embed)
                 time.sleep(90)
+                continue
             except errors.rpcerrorlist.FloodWaitError:
                 slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Failed to send to channel {group}, due to flooding, sleeping for 600 seconds", 0.01)
+                with open("error_groups.txt", "r") as f:
+                    f.write(f"{group}\n - Flood")
                 now = datetime.now()
                 current_time = now.strftime("%H:%M:%S")
                 embed = Embed(
@@ -251,8 +275,11 @@ async def x():
                 embed.set_thumbnail(image1)
                 hook.send(embed=embed)
                 time.sleep(600)
+                continue
             except errors.rpcerrorlist.UserBannedInChannelError:
                 slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Failed to send to channel {group}, due to account being banned in channel, sleeping for 7200 seconds", 0.01)
+                with open("error_groups.txt", "r") as f:
+                    f.write(f"{group}\n - Banned in channel")
                 now = datetime.now()
                 current_time = now.strftime("%H:%M:%S")
                 embed = Embed(
@@ -268,8 +295,11 @@ async def x():
                 embed.set_thumbnail(image1)
                 hook.send(embed=embed)
                 time.sleep(7200)
+                continue
             except errors.rpcerrorlist.ChatRestrictedError:
                 slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Failed to send to channel {group}, due to chat being restricted, sleeping for 30 seconds", 0.01)
+                with open("error_groups.txt", "r") as f:
+                    f.write(f"{group}\n - Chat restricted")
                 now = datetime.now()
                 current_time = now.strftime("%H:%M:%S")
                 embed = Embed(
@@ -285,8 +315,11 @@ async def x():
                 embed.set_thumbnail(image1)
                 hook.send(embed=embed)
                 time.sleep(30)
+                continue
             except ValueError:
                 slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Failed to send to channel {group}, due to it being non-existent.", 0.01)
+                with open("error_groups.txt", "r") as f:
+                    f.write(f"{group}\n - Non-existent")
                 now = datetime.now()
                 current_time = now.strftime("%H:%M:%S")
                 embed = Embed(
@@ -302,6 +335,7 @@ async def x():
                 embed.set_thumbnail(image1)
                 hook.send(embed=embed)
                 time.sleep(1)
+                continue
         slow_type(Fore.YELLOW + "Sleep: " + Style.RESET_ALL + f" Sleeping for {wait2} second(s), because all groups have been messaged.", 0.01)
         now = datetime.now()
         current_time = now.strftime("%H:%M:%S")
@@ -312,6 +346,7 @@ async def x():
         )
         image1 = 'https://i.imgur.com/Jkg9O7Q.png'
         embed.set_author(name='Telegram Ad-Bot', icon_url=image1)
+        embed.add_field(name="Messages Sent", value=f"{sCount} Groups messaged :smiley:")
         embed.add_field(name='Ad sent', value=f'{group} :magic_wand:')
         embed.add_field(name='Time', value=f'{current_time} :clock1:')
         embed.set_footer(text=f'Telegram Ad-Bot | {nickname}', icon_url=image1)
@@ -326,7 +361,7 @@ async def handle_new_message(event):
     if event.is_private:
         from_ = await event.client.get_entity(event.from_id)
         if not from_.bot:
-            print(time.asctime(), '-', event.message)
+            print("Message autoresponse: " + time.asctime(), '-', event.message)
             time.sleep(1)
             await event.respond(automessage)
 
