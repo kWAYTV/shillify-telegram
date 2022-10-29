@@ -1,7 +1,7 @@
 ############################IMPORTS################################
 import asyncio, time, os, contextlib
-from telethon.sync import TelegramClient, events, errors, functions
-from telethon.tl.functions.channels import GetFullChannelRequest
+from telethon import TelegramClient
+from telethon import events, errors, functions
 from colorama import Fore, Back, Style, init
 from dhooks import Webhook, Embed
 from datetime import datetime
@@ -81,8 +81,6 @@ clear()
 slow_type(Fore.BLUE + "Input: " + Style.RESET_ALL + f" How long do you want to wait after all groups have been messaged? (seconds): ", 0.0001)
 wait2 = int(input())
 clear()
-slow_type(Fore.BLUE + "Input: " + Style.RESET_ALL + f" Do you want to join groups?: ", 0.0001)
-join = input()
 slow_type(Fore.BLUE + "Input: " + Style.RESET_ALL + f"Enter your nickname: ", 0.0001)
 nickname = input()
 clear()
@@ -151,8 +149,9 @@ error_groups = open("error_groups.txt", "w")
 
 async def join():
     seen = []
-		
-    option = input(slow_type(Fore.BLUE + "Input: " + Style.RESET_ALL + f" Do you want to join groups? (y/n): ", 0.0001))
+	
+    slow_type(Fore.BLUE + "Input: " + Style.RESET_ALL + f" Do you want to join groups? (y/n): ", 0.0001)
+    option = input()
     if option == "" or "n" in option: return
     print()
     
@@ -166,13 +165,13 @@ async def join():
                 else: code = invite
                 
                 await self.client(functions.channels.JoinChannelRequest(code))
-                logging.info("Successfully joined group: " + invite)
+                slow_type(Fore.GREEN + "OK: " + Style.RESET_ALL + "Joined group: " + invite, 0.0001)
                 break
             except errors.FloodWaitError as e:
-                logging.info("Ratelimited for " + str(e.seconds) + " seconds")
+                slow_type(Fore.YELLOW + "RATE: " + Style.RESET_ALL + "Ratelimited for " + str(e.seconds) + " seconds", 0.0001)
                 await asyncio.sleep(int(e.seconds))
             except Exception:
-                logging.info("Failed to join \x1b[38;5;147m%s\x1b[0m." % (invite))
+                slow_type(Fore.RED + "FAIL: " + Style.RESET_ALL + "Failed to join group: " + invite, 0.0001)
                 break
         
         await asyncio.sleep(0.8)
@@ -392,8 +391,8 @@ async def start():
     try:
         await client.start()
         await client.send_message(f'{nickname}', f'🚀Adbot powered **on**! \nFound {len(groups)} groups in the file.\nStarting to advertise...')
-        join()
-        shill()
+        await join()
+        await shill()
     except Exception as e:
         slow_type(Fore.RED + "Error: " + Style.RESET_ALL + str(e), 0.0001)
         time.sleep(3)
