@@ -1,5 +1,5 @@
 ############################IMPORTS################################
-import asyncio, time, os, contextlib, keyboard
+import asyncio, time, os, contextlib
 from telethon.sync import TelegramClient, events, errors
 from telethon.tl.functions.channels import GetFullChannelRequest
 from colorama import Fore, Back, Style, init
@@ -85,13 +85,14 @@ slow_type(Fore.BLUE + "Input: " + Style.RESET_ALL + f"Enter your nickname: ", 0.
 nickname = input()
 clear()
 
-
 intro = f"""
 {Fore.MAGENTA}═══════════════════════════════════════════════════════════════════════════════════════════{Fore.RESET}
  ____ ____ ____ ____ ____ ____ ____ ____ _________ ____ ____ ____ ____ ____ ____ ____ ____ 
 ||S |||h |||i |||l |||l |||i |||f |||y |||       |||T |||e |||l |||e |||g |||r |||a |||m ||
 ||__|||__|||__|||__|||__|||__|||__|||__|||_______|||__|||__|||__|||__|||__|||__|||__|||__||
 |/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
+
+https://github.com/kWAYTV/
 {Fore.MAGENTA}═══════════════════════════════════════════════════════════════════════════════════════════{Fore.RESET}
 """
 logs = f""" 
