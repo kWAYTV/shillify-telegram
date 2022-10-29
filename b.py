@@ -168,12 +168,54 @@ async def join():
                 
                 await client(JoinChannelRequest(code))
                 slow_type(Fore.GREEN + "OK: " + Style.RESET_ALL + "Joined group: " + invite, 0.0001)
+                now = datetime.now()
+                current_time = now.strftime("%H:%M:%S")
+                embed = Embed(
+                description=f'Joined group: {invite}',
+                color=0x9986a3,
+                timestamp='now'
+                )
+                image1 = 'https://i.imgur.com/Jkg9O7Q.png'
+                embed.set_author(name='Telegram Ad-Bot', icon_url=image1)
+                embed.add_field(name='Joined Group', value=f'{invite}')
+                embed.add_field(name='Time', value=f'{current_time} :clock1:')
+                embed.set_footer(text=f'Telegram Ad-Bot | {nickname}', icon_url=image1)
+                embed.set_thumbnail(image1)
+                hook.send(embed=embed)
                 break
             except errors.FloodWaitError as e:
                 slow_type(Fore.YELLOW + "RATE: " + Style.RESET_ALL + "Ratelimited for " + str(e.seconds) + " seconds", 0.0001)
+                now = datetime.now()
+                current_time = now.strftime("%H:%M:%S")
+                embed = Embed(
+                description=f'Ratelimited for {str(e.seconds)} seconds',
+                color=0x9986a3,
+                timestamp='now'
+                )
+                image1 = 'https://i.imgur.com/Jkg9O7Q.png'
+                embed.set_author(name='Telegram Ad-Bot', icon_url=image1)
+                embed.add_field(name='Ratelimited', value=f'{str(e.seconds)} seconds')
+                embed.add_field(name='Time', value=f'{current_time} :clock1:')
+                embed.set_footer(text=f'Telegram Ad-Bot | {nickname}', icon_url=image1)
+                embed.set_thumbnail(image1)
+                hook.send(embed=embed)
                 await asyncio.sleep(int(e.seconds))
             except Exception:
                 slow_type(Fore.RED + "FAIL: " + Style.RESET_ALL + "Failed to join group: " + invite, 0.0001)
+                now = datetime.now()
+                current_time = now.strftime("%H:%M:%S")
+                embed = Embed(
+                description=f'Failed to join group: {invite}',
+                color=0x9986a3,
+                timestamp='now'
+                )
+                image1 = 'https://i.imgur.com/Jkg9O7Q.png'
+                embed.set_author(name='Telegram Ad-Bot', icon_url=image1)
+                embed.add_field(name='Failed to join group', value=f'{invite}')
+                embed.add_field(name='Time', value=f'{current_time} :clock1:')
+                embed.set_footer(text=f'Telegram Ad-Bot | {nickname}', icon_url=image1)
+                embed.set_thumbnail(image1)
+                hook.send(embed=embed)
                 break
         
         await asyncio.sleep(0.8)
@@ -208,9 +250,10 @@ async def shill():
                 if group in messaged_groups:
                     slow_type(Fore.YELLOW + "SKIP: " + Style.RESET_ALL + f"Group {group} has already been messaged.", 0.0001)
                     continue
+                else:
+                    messaged_groups.append(group)
                 await client.send_message(group, message)
                 slow_type(Fore.GREEN + "Success: " + Style.RESET_ALL + f" Message sent to {group}, sleeping for {wait1} second(s)", 0.0001)
-                messaged_groups.append(group)
                 sCount += 1
                 now = datetime.now()
                 current_time = now.strftime("%H:%M:%S")
@@ -309,7 +352,7 @@ async def shill():
                 time.sleep(600)
                 continue
             except errors.rpcerrorlist.UserBannedInChannelError:
-                slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Failed to send to channel {group}, due to account being banned in channel, sleeping for 7200 seconds", 0.0001)
+                slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Failed to send to channel {group}, due to account being banned in channel, sleeping for {wait1} seconds", 0.0001)
                 with open("error_groups.txt", "w") as f:
                     f.write(f"{group} - Banned in channel\n")
                 now = datetime.now()
@@ -326,7 +369,7 @@ async def shill():
                 embed.set_footer(text=f'Telegram Ad-Bot | {nickname}', icon_url=image1)
                 embed.set_thumbnail(image1)
                 hook.send(embed=embed)
-                time.sleep(7200)
+                time.sleep(wait1)
                 continue
             except errors.rpcerrorlist.ChatRestrictedError:
                 slow_type(Fore.RED + "Error: " + Style.RESET_ALL + f" Failed to send to channel {group}, due to chat being restricted, sleeping for 30 seconds", 0.0001)
