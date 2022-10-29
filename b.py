@@ -7,7 +7,7 @@ from dhooks import Webhook, Embed
 from datetime import datetime
 hook = Webhook("")  # Discord embed logs
 automessage = 'Hey! Open a ticket in my discord server for any questions or to get support: discord.gg/kws' # Auto message to respond when you are afk
-trackgroup = {"doscord", "tokens_404"} # Group(s) to keep track if the scrip still running (optional)
+trackgroups = {"doscord", "tokens_404"} # Group(s) to keep track if the scrip still running (optional)
 #############################CODE##################################
 
 def slow_type(text, speed, newLine = True):
@@ -171,10 +171,7 @@ async def x():
         sCount=0
         messaged_groups = []
         slow_type(Fore.BLUE + "Sending message to " + Style.RESET_ALL + f"{len(found_groups)} groups", 0.0001)
-        for g in trackgroup:
-            if trackgroup and g not in found_groups:
-                found_groups.append(g)
-        for found_group in found_groups:
+        for found_group in found_groups: 
             group = found_group
             try:
                 if group in messaged_groups:
@@ -339,7 +336,11 @@ async def x():
                 hook.send(embed=embed)
                 time.sleep(1)
                 continue
+        for group in trackgroups:
+            if group not in messaged_groups:
+                await client.send_message(group, message)
         slow_type(Fore.YELLOW + "Sleep: " + Style.RESET_ALL + f" Sleeping for {wait2} second(s), because all groups have been messaged.", 0.0001)
+        client.send_message(f'{nickname}', f'✅ Finished advertising! \n🕛Sleeping for {wait2} seconds(s)')
         now = datetime.now()
         current_time = now.strftime("%H:%M:%S")
         embed = Embed(
@@ -357,6 +358,7 @@ async def x():
         time.sleep(wait2)
 
 client.start()
+client.send_message(f'{nickname}', f'🚀Adbot powered **on**! \nFound {len(groups)} in the file.\nStarting to advertise...')
 
 @client.on(events.NewMessage(incoming=True))
 async def handle_new_message(event):
