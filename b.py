@@ -686,7 +686,7 @@ async def handle_new_message(event):
     if event.is_private:
         from_ = await event.client.get_entity(event.from_id)
         if not from_.bot:
-            slow_type(Fore.MAGENTA + f"Autoreplying: {Fore.RESET}{event.message}.", 0.00001)
+            slow_type(Fore.MAGENTA + f"REPLY: {Fore.RESET}{event.message}.", 0.00001)
             time.sleep(1)
             await event.respond(automessage)
 
