@@ -31,97 +31,6 @@ def rsCount():
 
 # Clear screen function
 clear = lambda: os.system('cls' if os.name in ('nt', 'dos') else 'clear')
-clear()
-
-# Checking for files
-slow_type(Fore.GREEN + "Started!: " + Style.RESET_ALL + "Checking for files...", 0.0001)
-def check_config():
-    if not os.path.isfile('groups.txt'):
-        slow_type(Fore.RED + "Error: " + Style.RESET_ALL + 'No groups.txt...', 0.0001)
-        slow_type('Creating groups.txt...', 0.0001)
-        open('groups.txt', 'w').close()
-        clear()
-    if not os.path.isfile('config.txt'):
-        slow_type(Fore.RED + "Error: " + Style.RESET_ALL + 'No config.txt...', 0.0001)
-        slow_type('Creating config.txt...', 0.0001)
-        open('config.txt', 'w').close()
-        clear()
-    if not os.path.isfile('message.txt'):
-        slow_type(Fore.RED + "Error: " + Style.RESET_ALL + 'No message.txt...', 0.0001)
-        slow_type('Creating message.txt...', 0.0001)
-        open('message.txt', 'w').close()
-        clear()
-
-check_config()
-
-# Checking if filled
-if os.stat('config.txt').st_size == 0:
-    slow_type(Fore.RED + "Error: " + Style.RESET_ALL + 'config.txt is empty, making one...', 0.0001)
-    clear()
-    slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f"Enter your ApiID:", 0.0001)
-    apiId = input()
-    clear()
-    slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f"Enter your ApiHash:", 0.0001)
-    apiHash = input()
-    config = open('config.txt', 'w')
-    config.write(apiId + ':' + apiHash)
-    config.close()
-    clear()
-
-if os.stat('groups.txt').st_size == 0:
-    slow_type(Fore.RED + "Error: " + Style.RESET_ALL + 'groups.txt is empty', 0.0001)
-    slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f"Please enter your groups separated by commas and without 't.me/' part | Ex: group1, group2, group3: ", 0.0001)
-    group_list = input()
-    group_list = group_list.split(',')
-    group_list = [x.strip() for x in group_list]
-    with open('groups.txt', 'a') as f:
-        for group in group_list:
-            f.write(group + '\n')
-    clear()
-
-if os.stat('message.txt').st_size == 0:
-    slow_type(Fore.RED + "Error: " + Style.RESET_ALL + 'message.txt is empty', 0.0001)
-    slow_type(Fore.RED + "Error: " + Style.RESET_ALL + 'Please enter your message and restart the tool', 0.0001)
-    time.sleep(5)
-    exit()
-
-if not wait1 or wait1 == 0:
-    clear()
-    slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f" How long do you want to wait between each message? (seconds): ", 0.0001)
-    wait1 = int(input())
-    clear()
-
-if not wait2 or wait2 == 0:
-    clear()
-    slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f" How long do you want to wait after all groups have been messaged? (seconds): ", 0.0001)
-    wait2 = int(input())
-    clear()
-
-if not nickname:
-    clear()
-    slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f"Enter your telegram username (for notifications): ", 0.0001)
-    nickname = input()
-    clear()
-
-if not webhook_url:
-    clear()
-    slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f"Enter your discord webhook url: ", 0.0001)
-    webhook_url = input()
-    clear()
-
-if not automessage:
-    clear()
-    slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f"Enter your auto message: ", 0.0001)
-    automessage = input()
-    clear()
-
-if not trackgroups:
-    clear()
-    slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f"Enter your track groups separated by commas and without 't.me/' part | Ex: group1, group2, group3: ", 0.0001)
-    trackgroups = input()
-    trackgroups = trackgroups.split(',')
-    trackgroups = [x.strip() for x in trackgroups]
-    clear()
 
 # Logo
 intro = f"""
@@ -140,6 +49,81 @@ logs = f"""
 {Fore.MAGENTA}╰───────────────╯{Fore.RESET}
 """
 
+clear()
+slow_type(intro + Style.RESET_ALL, 0.001)
+slow_type("\n" + logs + Style.RESET_ALL, 0.001)
+
+# Checking for files
+slow_type(Fore.GREEN + "Started!: " + Style.RESET_ALL + "Checking for files...", 0.0001)
+def check_config():
+    if not os.path.isfile('groups.txt'):
+        slow_type(Fore.RED + "Error: " + Style.RESET_ALL + 'No groups.txt...', 0.0001)
+        slow_type('Creating groups.txt...', 0.0001)
+        open('groups.txt', 'w').close()
+    if not os.path.isfile('config.txt'):
+        slow_type(Fore.RED + "Error: " + Style.RESET_ALL + 'No config.txt...', 0.0001)
+        slow_type('Creating config.txt...', 0.0001)
+        open('config.txt', 'w').close()
+    if not os.path.isfile('message.txt'):
+        slow_type(Fore.RED + "Error: " + Style.RESET_ALL + 'No message.txt...', 0.0001)
+        slow_type('Creating message.txt...', 0.0001)
+        open('message.txt', 'w').close()
+
+check_config()
+
+# Checking if filled
+if os.stat('config.txt').st_size == 0:
+    slow_type(Fore.RED + "Error: " + Style.RESET_ALL + 'config.txt is empty, making one...', 0.0001)
+    slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f"Enter your ApiID:", 0.0001)
+    apiId = input()
+    slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f"Enter your ApiHash:", 0.0001)
+    apiHash = input()
+    config = open('config.txt', 'w')
+    config.write(apiId + ':' + apiHash)
+    config.close()
+
+if os.stat('groups.txt').st_size == 0:
+    slow_type(Fore.RED + "Error: " + Style.RESET_ALL + 'groups.txt is empty', 0.0001)
+    slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f"Please enter your groups separated by commas and without 't.me/' part | Ex: group1, group2, group3: ", 0.0001)
+    group_list = input()
+    group_list = group_list.split(',')
+    group_list = [x.strip() for x in group_list]
+    with open('groups.txt', 'a') as f:
+        for group in group_list:
+            f.write(group + '\n')
+
+if os.stat('message.txt').st_size == 0:
+    slow_type(Fore.RED + "Error: " + Style.RESET_ALL + 'message.txt is empty', 0.0001)
+    slow_type(Fore.RED + "Error: " + Style.RESET_ALL + 'Please enter your message and restart the tool', 0.0001)
+    time.sleep(5)
+    exit()
+
+if not wait1 or wait1 == 0:
+    slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f" How long do you want to wait between each message? (seconds): ", 0.0001)
+    wait1 = int(input())
+
+if not wait2 or wait2 == 0:
+    slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f" How long do you want to wait after all groups have been messaged? (seconds): ", 0.0001)
+    wait2 = int(input())
+
+if not nickname:
+    slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f"Enter your telegram username (for notifications): ", 0.0001)
+    nickname = input()
+
+if not webhook_url:
+    slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f"Enter your discord webhook url: ", 0.0001)
+    webhook_url = input()
+
+if not automessage:
+    slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f"Enter your auto message: ", 0.0001)
+    automessage = input()
+
+if not trackgroups:
+    slow_type(Fore.CYAN + "Input: " + Style.RESET_ALL + f"Enter your track groups separated by commas and without 't.me/' part | Ex: group1, group2, group3: ", 0.0001)
+    trackgroups = input()
+    trackgroups = trackgroups.split(',')
+    trackgroups = [x.strip() for x in trackgroups]
+
 # Start webhook
 hook = Webhook(webhook_url)  # Discord embed logs
 now = datetime.now()
@@ -157,9 +141,7 @@ embed.set_footer(text=f'Telegram Ad-Bot | {nickname}', icon_url=image1)
 embed.set_thumbnail(image1)
 hook.send(embed=embed)
 
-clear()
-slow_type(intro + Style.RESET_ALL, 0.001)
-slow_type("\n" + logs + Style.RESET_ALL, 0.001)
+
 
 # Load API Data
 with open("config.txt", "a+") as config:
