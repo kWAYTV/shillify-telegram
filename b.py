@@ -649,6 +649,7 @@ async def shill():
                 await client.send_message(group, message)
             else:
                 continue
+        messaged_groups = []
         slow_type(Fore.YELLOW + "Sleep: " + Style.RESET_ALL + f" Sleeping for {wait2} second(s), because all groups have been messaged.", 0.0001)
         await client.send_message(f'{nickname}', f'✅ Finished advertising! \n🕛Sleeping for {wait2} seconds(s)')
         now = datetime.now()
