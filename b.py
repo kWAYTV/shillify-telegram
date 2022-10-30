@@ -474,6 +474,7 @@ async def shill():
     slow_type("", 0.00001)
 
     while True:
+        global messaged_groups
         sCount=0
         slow_type(Fore.BLUE + "Sending message to " + Style.RESET_ALL + f"{len(found_groups)} groups", 0.0001)
         await client.send_message(f'{nickname}', f'**Started sending messages to {len(found_groups)} groups**')
