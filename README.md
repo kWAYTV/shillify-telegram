@@ -11,10 +11,10 @@
  - Group leaver
  - Doesn't forward
 # Set up
+ - Get your API ID/HASH from [this link](https://my.telegram.org/auth). 
  - It generates needed files automatically so follow these steps:<br />
    *1.* Install the imports<br />
    *2.* Run the script and follow the console instructions.<br />
- - Get your API ID/HASH from [this link](https://my.telegram.org/auth). 
 # To-do list
  - Custom delay per channel
  - Account rotation
