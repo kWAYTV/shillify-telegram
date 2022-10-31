@@ -1,7 +1,7 @@
 # Shillify Telegram
  Telegram group advertiser. Useful for marketplaces/sellers.
 # Disclaimer 
- This is a proof of concept. Use good accounts with the tool and keep the delays as high as possible. Im not responsible if your account gets banned with the tool or any error that could happen.
+ This is a proof of concept. Use good accounts with the tool and keep the delays as high as possible. Im not responsible if your account gets banned with the tool or anything that could happen.
 # Features
  - Auto Config Generator
  - Auto File Generator
