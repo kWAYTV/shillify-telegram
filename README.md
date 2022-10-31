@@ -10,7 +10,7 @@
  - Doesn't forward
 # Set up
  Basically it has auto config generator so just run it. Get your API ID/HASH from [this link](https://my.telegram.org/auth).
-# Todo
+# To-do list
 - Custom delay per channel
 - Account rotation
 - Images for the messages
