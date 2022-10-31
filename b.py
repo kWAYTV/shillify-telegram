@@ -44,9 +44,8 @@ logs = f"""
 """
 
 clear()
-slow_type(intro + Style.RESET_ALL, 0.001)
-slow_type("\n" + logs + Style.RESET_ALL, 0.001)
-
+slow_type(intro + Style.RESET_ALL, 0.000001)
+slow_type("\n" + logs + Style.RESET_ALL, 0.000001)
 
 try:
     with open("config.json") as f:
@@ -63,7 +62,7 @@ except FileNotFoundError:
             "nickname": "",
             "webhook_url": ""
         }
-        json.dump(config, f)
+        json.dump(config, f, indent=2)
         slow_type(Fore.RED + "ERROR: " + Style.RESET_ALL + 'Please fill in the config.json file and restart the script.', 0.0001)
         time.sleep(3)
         exit()
@@ -71,7 +70,6 @@ except FileNotFoundError:
 # Loading config
 with open("config.json", "r") as config_file:
     config = json.load(config_file)
-
 
     api_id = config["api_id"]
     api_hash = config["api_hash"]
