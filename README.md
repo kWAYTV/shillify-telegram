@@ -9,7 +9,6 @@
  - Some telegram logs
  - Group joiner
  - Group leaver
- - Doesn't forward
 # Set up
  - Get your API ID/HASH from [this link](https://my.telegram.org/auth). 
  - It generates needed files automatically so follow these steps:<br />
@@ -20,6 +19,7 @@
  - Account rotation
  - Images for the messages
  - Auto import installer
+ - 2 Modes: forward message/sending from file
 # Links
  [Discord](https://discord.gg/kws)
  [Telegram](https://t.me/kwaytv)
