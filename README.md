@@ -3,6 +3,7 @@
 # Disclaimer 
  This is a proof of concept. Use good accounts with the tool and keep the delays as high as possible. Im not responsible if your account gets banned with the tool or anything that could happen.
 # Features
+This script will allow you to advertise whatever you need without doing it manually.
  - Auto Config Generator
  - Auto File Generator
  - Sexy webhook logs
